@@ -1,6 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components";
 import XIcon from '../../icons/Xicon.png'
+import Check from '../../icons/Check.png'
 
 const StyledRemoveButton = styled.img`
     width:1rem;
@@ -20,6 +21,7 @@ const StyledTodoItem = styled.div`
     display: flex;
     justify-content: start;
     align-items: center;
+    
     &:hover ${StyledRemoveButton} {
         visibility: visible;
     }
@@ -31,10 +33,13 @@ const StyledCheckbox = styled.input`
     height: var(--radius);
     margin-right: 0.8rem;
     border-radius: 50%;
-    border:1px solid rgba(128,128,128,0.3);
+    border:1px solid black;
     appearance: none;
+    opacity: 0.15;
     &:checked{
-        background: red;
+        background-image: url(${Check});
+        
+        background-size: contain;
     }
 `
 
