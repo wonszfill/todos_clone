@@ -7,7 +7,15 @@ const StyledAddItem = styled.input`
     border: none;
     width: 100%;
     margin: 0;
+    text-align: left;
     background: white;
+    &:active{
+        border: none;
+    }
+    &:focus{
+        border: none;
+        outline: none;
+    }
     &::placeholder {
         font-style: italic;
         opacity: 0.1;

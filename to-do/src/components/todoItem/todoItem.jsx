@@ -1,3 +1,4 @@
+import { useState } from "react";
 import styled from "styled-components";
 
 const StyledTodoItem = styled.div`
@@ -19,22 +20,45 @@ const StyledCheckbox = styled.input`
     height: var(--radius);
     margin-right: 0.8rem;
     border-radius: 50%;
-    border: 1px solid #ddd;
+    border:1px solid rgba(128,128,128,0.3);
     appearance: none;
     &:checked{
         background: red;
     }
 `
 
-export const TodoItem = ({note, index}) => {
+const StyledTodoText = styled.span`
+    display: block;
+    text-decoration: ${(props) => props.isDone ? " line-through;" : null};
+    opacity: ${(props) => props.isDone ? "0.3;" : "1;"};
+    transition: opacity 0.5s;
+`
+
+const onCheckHandle = (note, index, setNotes, setLeftCounter) => {
+    setNotes((oldNotes) => {
+        oldNotes[index].isDone = !oldNotes[index].isDone;
+        console.log("check", oldNotes[index].isDone, !oldNotes[index].isDone );
+        return oldNotes;
+    });
+    if (note.isDone) {
+        setLeftCounter(oldCounter => oldCounter-1);
+    }else{
+        setLeftCounter(oldCounter => oldCounter+1)
+    }    
+}
+
+export const TodoItem = ({note, index, setNotes, setLeftCounter}) => {
+
     return ( 
     <StyledTodoItem>
         <StyledCheckbox 
-        type="checkbox" 
-        // checked={note.isDone}
+            type="checkbox" 
+            checked={note.isDone}
+            onClick={() => onCheckHandle(note, index, setNotes, setLeftCounter)}
         />
-        {index}
-        {note.text}
+        <StyledTodoText isDone={note.isDone}>
+            {note.text}
+        </StyledTodoText>      
     </StyledTodoItem> 
     );
 }
