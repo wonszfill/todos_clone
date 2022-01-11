@@ -14,7 +14,7 @@ const StyledApp = styled.div`
 
 const StyledAppWraper = styled.div`
 	width: 100%;
-	max-width: 500px;
+	max-width: 550px;
 `
 
 const StyledAppTitle = styled.h1`
@@ -48,6 +48,7 @@ const StyledSummary = styled.div`
 	width: 100%;
 	box-sizing: border-box;
 	box-shadow: 0 5px 4px 0 rgba(0, 0, 0, 0.2);
+	font-size: 0.8rem;
 	&:before{
 		content: "";
 		position: absolute;
