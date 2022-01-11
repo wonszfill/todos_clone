@@ -1,5 +1,13 @@
 import { useState } from "react";
 import styled from "styled-components";
+import XIcon from '../../icons/Xicon.png'
+
+const StyledRemoveButton = styled.img`
+    width:1rem;
+    padding: 0.2rem;
+    margin-right: 0.3rem;
+    visibility: hidden;
+`
 
 const StyledTodoItem = styled.div`
     padding: 0.4rem;
@@ -12,6 +20,9 @@ const StyledTodoItem = styled.div`
     display: flex;
     justify-content: start;
     align-items: center;
+    &:hover ${StyledRemoveButton} {
+        visibility: visible;
+    }
 `
 
 const StyledCheckbox = styled.input`
@@ -29,6 +40,8 @@ const StyledCheckbox = styled.input`
 
 const StyledTodoText = styled.span`
     display: block;
+    flex-grow: 1;
+    text-align: left;
     text-decoration: ${(props) => props.isDone ? " line-through;" : null};
     opacity: ${(props) => props.isDone ? "0.3;" : "1;"};
     transition: opacity 0.5s;
@@ -47,6 +60,19 @@ const onCheckHandle = (note, index, setNotes, setLeftCounter) => {
     }    
 }
 
+const deleteCurrentNote = (index, setNotes) => {
+    setNotes(oldNotes => {
+        const firstSlice = oldNotes[0] ? oldNotes.slice(0,index) : null; 
+        console.log(firstSlice);
+        const secondSlice = oldNotes.slice(index+1);
+        console.log(secondSlice);
+        const newNotes = [...firstSlice, ...secondSlice];
+        console.log(newNotes);
+        console.log("_______");
+        return newNotes;
+    })
+}
+
 export const TodoItem = ({note, index, setNotes, setLeftCounter}) => {
 
     return ( 
@@ -54,11 +80,16 @@ export const TodoItem = ({note, index, setNotes, setLeftCounter}) => {
         <StyledCheckbox 
             type="checkbox" 
             checked={note.isDone}
-            onClick={() => onCheckHandle(note, index, setNotes, setLeftCounter)}
+            onChange={() => onCheckHandle(note, index, setNotes, setLeftCounter)}
         />
         <StyledTodoText isDone={note.isDone}>
             {note.text}
-        </StyledTodoText>      
+        </StyledTodoText> 
+        <StyledRemoveButton
+            onClick={() => deleteCurrentNote(index, setNotes)}
+            src={XIcon}
+            alt="Delete" />
+  
     </StyledTodoItem> 
     );
 }

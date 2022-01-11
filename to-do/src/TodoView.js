@@ -34,10 +34,12 @@ const StyledTodosWrapper = styled.div`
 	flex-direction: column;
 	align-items: center;
 	background: white;
-	box-shadow: grey 5px 5px 25px -5px;
+	box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 25px 50px 0 rgba(0, 0, 0, 0.1);
+	z-index: 5;
 `
 
 const StyledSummary = styled.div`
+	position: relative;
 	display: flex;
 	justify-content: space-between;
 	padding: 1rem;
@@ -45,6 +47,29 @@ const StyledSummary = styled.div`
 	border-top: 1px solid rgba(128,128,128,0.3);
 	width: 100%;
 	box-sizing: border-box;
+	box-shadow: 0 5px 4px 0 rgba(0, 0, 0, 0.2);
+	&:before{
+		content: "";
+		position: absolute;
+		top: 100%;
+		left:2%;
+		width: 96%;
+		height: 0.6rem;
+		background: rgba(256, 256, 256, 0.5);
+		box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+		z-index: 1;
+	};
+	&:after{
+		content: "";
+		position: absolute;
+		top: 100%;
+		left: 1%;
+		width: 98%;
+		height: 0.3rem;
+		background: rgb(230, 230, 230);
+		box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+		z-index: 2;
+	}
 `
 
 const StyledNavLink = styled(NavLink)`
