@@ -106,9 +106,9 @@ const StyledTopBarWithInput = styled.div`
 
 const StyledFooter = styled.div`
 	padding: 1rem;
-	margin-top: 1rem;
+	margin-top: 4rem;
 	line-height: 2;
-	color: rgba(0,0,0,0.5)
+	color: rgba(0,0,0,0.3)
 `
 
 export function TodoView() {

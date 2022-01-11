@@ -26,8 +26,8 @@ const StyledAddItem = styled.input`
 
 export const AddItem = ({setNotes}) => {
 
-    const onClickHandle  = (e) => {
-        if (e.key === "Enter") {
+    const addNote = (e) => {
+        if (e.target.value !== "") {
             const text = e.target.value;
             const isDone = false;
             setNotes((oldNotes) => [{text: text, isDone: isDone}, ...oldNotes]);
@@ -35,12 +35,22 @@ export const AddItem = ({setNotes}) => {
         }
     }
 
+    const onClickHandle  = (e) => {
+        if (e.key === "Enter") {
+            addNote(e)
+        }
+    }
+
+    const onBlurHandle = (e) => {
+        addNote(e);
+    }
+
     return (
         <StyledAddItem
             type="text" 
             placeholder="What needs to be done?" 
             onKeyDown={onClickHandle}
-                
+            onBlur={onBlurHandle}    
         />
      );
 }
