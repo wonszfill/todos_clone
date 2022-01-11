@@ -104,6 +104,13 @@ const StyledTopBarWithInput = styled.div`
 	align-items: center;
 `
 
+const StyledFooter = styled.div`
+	padding: 1rem;
+	margin-top: 1rem;
+	line-height: 2;
+	color: rgba(0,0,0,0.5)
+`
+
 export function TodoView() {
 
   	const [notes, setNotes] = useState([]);
@@ -179,8 +186,21 @@ export function TodoView() {
 							Clear completed
 						</StyledRemoval>
 					</StyledSummary>}
+					
+
+
+
 				</StyledTodosWrapper>
-				
+				<StyledFooter>
+				<p>Double-click to edit a todo</p>
+				<p>
+				Created by Oscar Godson
+				</p><p>
+				Refactored by Christoph Burgmer
+				</p><p>
+				Recreated by Przemek Wojszwiłło
+				</p>
+				</StyledFooter>
 			</StyledAppWraper>
 		</StyledApp>
 	)
