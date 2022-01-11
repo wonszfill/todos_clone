@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import ChevronDown from './icons/Chevron.png'
 
 import { TodoItem } from './components/todoItem/todoItem';
 import { AddItem } from './components/addItem/AddItem';
@@ -20,6 +21,11 @@ const StyledAppTitle = styled.h1`
 	font-size: 6rem;
 	opacity: 0.1;
 	margin: 1rem;
+`
+
+const StyledChevron = styled.img`
+	width:1rem;
+	opacity: 0.2;
 `
 
 const StyledTodosWrapper = styled.div`
@@ -114,7 +120,7 @@ export function TodoView() {
 				<StyledTodosWrapper>
 					<StyledTopBarWithInput>
 						<StyledToggleButton onClick={ToggleAllNotes}>
-						
+							<StyledChevron src={ChevronDown} alt="Chevron" />
 						</StyledToggleButton>
 						<AddItem setNotes={setNotes}/>
 					</StyledTopBarWithInput>
