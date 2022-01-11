@@ -59,12 +59,16 @@ const StyledNavLink = styled(NavLink)`
 
 const StyledRemoval = styled.div`
 	cursor: pointer;
-	&:hover{text-decoration: underline;}
+	visibility: ${props => props.isHidden ? "visible;": "hidden;"};
+	&:hover{
+		text-decoration: underline;
+	}
+	
 `
 
 const StyledToggleButton = styled.div`
-	margin-left: 0.5rem;
-	padding:1rem;
+	margin-left: 1rem;
+	padding:0.1rem;
 	cursor: pointer;
 `
 
@@ -143,7 +147,10 @@ export function TodoView() {
 							<StyledNavLink activeClassName="active" to="/active">Active</StyledNavLink> 
 							<StyledNavLink activeClassName="active" to="/completed">Completed</StyledNavLink>
 						</div>
-						<StyledRemoval onClick={ClearCompleted}>
+						<StyledRemoval 
+							onClick={ClearCompleted} 
+							isHidden={notes.length>(notes.length - leftCounter)}
+						>
 							Clear completed
 						</StyledRemoval>
 					</StyledSummary>}
