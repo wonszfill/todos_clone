@@ -1,3 +1,4 @@
+import { useState } from "react";
 import styled from "styled-components";
 
 const StyledAddItem = styled.input`
@@ -34,12 +35,13 @@ export const AddItem = ({setNotes}) => {
         }
     }
 
-    return ( 
+    return (
         <StyledAddItem
             type="text" 
             placeholder="What needs to be done?" 
-            onKeyDown={onClickHandle}>
-        </StyledAddItem>
+            onKeyDown={onClickHandle}
+                
+        />
      );
 }
  

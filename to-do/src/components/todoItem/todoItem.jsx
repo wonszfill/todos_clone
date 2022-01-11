@@ -47,33 +47,61 @@ const StyledTodoText = styled.span`
     transition: opacity 0.5s;
 `
 
-const onCheckHandle = (note, index, setNotes, setLeftCounter) => {
-    setNotes((oldNotes) => {
-        oldNotes[index].isDone = !oldNotes[index].isDone;
-        console.log("check", oldNotes[index].isDone, !oldNotes[index].isDone );
-        return oldNotes;
-    });
-    if (note.isDone) {
-        setLeftCounter(oldCounter => oldCounter-1);
-    }else{
-        setLeftCounter(oldCounter => oldCounter+1)
-    }    
-}
+const StyledEditText = styled.input`
+    border: none;
+    font-size: inherit;
+    flex-grow: 1;
+    height: 100%;
 
-const deleteCurrentNote = (index, setNotes) => {
-    setNotes(oldNotes => {
-        const firstSlice = oldNotes[0] ? oldNotes.slice(0,index) : null; 
-        console.log(firstSlice);
-        const secondSlice = oldNotes.slice(index+1);
-        console.log(secondSlice);
-        const newNotes = [...firstSlice, ...secondSlice];
-        console.log(newNotes);
-        console.log("_______");
-        return newNotes;
-    })
-}
+`
+
 
 export const TodoItem = ({note, index, setNotes, setLeftCounter}) => {
+
+    const [isEdited, setIsEdited] = useState(false);
+    const [editedValue, setEditedValue] = useState(note.text);
+
+    const passEditedValue = () => {
+        setIsEdited(false);
+        setNotes((oldNotes) => {
+            oldNotes[index].text = editedValue;
+            return oldNotes;
+        });
+    }
+
+    const onEnterEditHandle  = (e) => {
+        if (e.key === "Enter") {
+            passEditedValue();
+        }
+    }
+
+    const onCheckHandle = () => {
+        setNotes((oldNotes) => {
+            oldNotes[index].isDone = !oldNotes[index].isDone;
+            console.log("check", oldNotes[index].isDone, !oldNotes[index].isDone );
+            return oldNotes;
+        });
+        if (note.isDone) {
+            setLeftCounter(oldCounter => oldCounter-1);
+        }else{
+            setLeftCounter(oldCounter => oldCounter+1)
+        }    
+    }
+    
+    const deleteCurrentNote = () => {
+        setNotes(oldNotes => {
+            const firstSlice = oldNotes[0] ? oldNotes.slice(0,index) : null; 
+            console.log(firstSlice);
+            const secondSlice = oldNotes.slice(index+1);
+            console.log(secondSlice);
+            const newNotes = [...firstSlice, ...secondSlice];
+            console.log(newNotes);
+            console.log("_______");
+            return newNotes;
+        })
+    }
+
+
 
     return ( 
     <StyledTodoItem>
@@ -82,9 +110,17 @@ export const TodoItem = ({note, index, setNotes, setLeftCounter}) => {
             checked={note.isDone}
             onChange={() => onCheckHandle(note, index, setNotes, setLeftCounter)}
         />
-        <StyledTodoText isDone={note.isDone}>
+        {!isEdited && <StyledTodoText 
+            isDone={note.isDone}
+            onDoubleClick={() => setIsEdited(true)} >
             {note.text}
-        </StyledTodoText> 
+        </StyledTodoText> }
+        {isEdited && <StyledEditText 
+            value={editedValue}
+            onChange={(e)=>setEditedValue(e.target.value)}
+            onBlur={passEditedValue}
+            onKeyPress={onEnterEditHandle}
+            onDoubleClick={passEditedValue} /> }
         <StyledRemoveButton
             onClick={() => deleteCurrentNote(index, setNotes)}
             src={XIcon}
@@ -93,4 +129,3 @@ export const TodoItem = ({note, index, setNotes, setLeftCounter}) => {
     </StyledTodoItem> 
     );
 }
- 
