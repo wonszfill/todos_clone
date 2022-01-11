@@ -29,7 +29,7 @@ export const AddItem = ({setNotes}) => {
         if (e.key === "Enter") {
             const text = e.target.value;
             const isDone = false;
-            setNotes((oldNotes) => [...oldNotes, {text: text, isDone: isDone}]);
+            setNotes((oldNotes) => [{text: text, isDone: isDone}, ...oldNotes]);
             e.target.value = "";
         }
     }
