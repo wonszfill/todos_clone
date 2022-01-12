@@ -1,11 +1,14 @@
 import { useState } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import XIcon from '../../icons/Xicon.png'
 import Check from '../../icons/Check.png'
 import { PALLETE } from "../../colors/PALLETE";
 
 
 const StyledRemoveButton = styled.img`
+    position: absolute;
+    top: 1rem;
+    right: 0.8rem;
     width:1rem;
     padding: 0.2rem;
     margin-right: 0.3rem;
@@ -18,11 +21,12 @@ const StyledRemoveButton = styled.img`
 `
 
 const StyledTodoItem = styled.div`
-    padding: 0 0.4rem;
+    padding-left:0.4rem;
     font-size: 1.2rem;
     border: none;
     width: 100%;
     margin: 0;
+    position: relative;
     box-sizing: border-box;
     border-top: 1px solid ${PALLETE.borderGray};
     display: flex;
@@ -38,7 +42,7 @@ const StyledCheckbox = styled.input`
     --radius: 2rem;
     width: var(--radius);
     height: var(--radius);
-    margin: 0.8rem 0.4rem;
+    margin: 0.6rem 0.4rem;
     border-radius: 50%;
     border:1px solid black;
     appearance: none;
@@ -52,8 +56,6 @@ const StyledCheckbox = styled.input`
 const StyledTodoText = styled.span`
     position: relative;
     text-align: left;
-
-    ${(props) => props.isDone ? ";" : null};
     opacity: ${(props) => props.isDone ? "0.5;" : "1;"};
     transition: opacity 0.7s;
 
@@ -71,16 +73,31 @@ const StyledTodoText = styled.span`
     }
 
 `
+const KeyframesPulsatingText = keyframes`
+    0% {opacity: 1}
+    25% {opacity: 0.6}
+    50% {opacity: 0.5}
+    75% {opacity: 0.6}
+    100% {opacity: 1}
+`
 
 const StyledEditText = styled.input`
-    border: none;
     font-size: inherit;
+    color: inherit;
     flex-grow: 1;
+    display: block;
     height: 100%;
-
-`
-const StyledFlexSpace = styled.div`
-    flex-grow: 1;
+    font-family: inherit;
+    border: 1px solid ${PALLETE.borderGray};
+    padding: 0.8rem 0.4rem;
+    &:focus, &:active{
+        box-shadow: inset 0 0 5px 1px ${PALLETE.shadowBlack};
+        border:none;
+        outline: none;
+        animation-name: ${KeyframesPulsatingText};
+        animation-iteration-count: infinite;
+        animation-duration: 1.5s;
+    }
 `
 
 export const TodoItem = ({note, setNotes, setLeftCounter}) => {
@@ -141,12 +158,14 @@ export const TodoItem = ({note, setNotes, setLeftCounter}) => {
                 {note.text}
             </StyledTodoText> }
             {isEdited && <StyledEditText 
+                autoFocus 
                 value={editedValue}
-                onChange={(e)=>setEditedValue(e.target.value)}
+                onChange={(e)=>{
+                    setEditedValue(e.target.value);
+                }}
                 onBlur={passEditedValue}
                 onKeyPress={onEnterEditHandle}
-                onDoubleClick={passEditedValue} /> }
-            <StyledFlexSpace/>
+                 /> }
             <StyledRemoveButton
                 onClick={deleteCurrentNote}
                 src={XIcon}
