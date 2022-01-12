@@ -38,7 +38,7 @@ const StyledCheckbox = styled.input`
     --radius: 2rem;
     width: var(--radius);
     height: var(--radius);
-    margin: 0.8rem;
+    margin: 0.8rem 0.4rem;
     border-radius: 50%;
     border:1px solid black;
     appearance: none;
@@ -54,19 +54,20 @@ const StyledTodoText = styled.span`
     text-align: left;
 
     ${(props) => props.isDone ? ";" : null};
-    opacity: ${(props) => props.isDone ? "0.3;" : "1;"};
-    transition: opacity 0.5s;
+    opacity: ${(props) => props.isDone ? "0.5;" : "1;"};
+    transition: opacity 0.7s;
 
     &:after{
+        transform-origin: 10%;
         transform: ${(props) => props.isDone ? "scaleX(1)" : "scaleX(0)"};
-        transition: transform 0.8s;
+        transition: transform 0.4s ease;
         content: "";
         position: absolute;
-        top: 60%;
+        top: 55%;
         left: 0;
         right: 0;
         height: 2px;
-        background: gray;
+        background: rgba(64,64,64,1);
     }
 
 `
@@ -82,7 +83,7 @@ const StyledFlexSpace = styled.div`
     flex-grow: 1;
 `
 
-export const TodoItem = ({note, index, setNotes, setLeftCounter}) => {
+export const TodoItem = ({note, setNotes, setLeftCounter}) => {
 
     const [isEdited, setIsEdited] = useState(false);
     const [editedValue, setEditedValue] = useState(note.text);
@@ -90,7 +91,8 @@ export const TodoItem = ({note, index, setNotes, setLeftCounter}) => {
     const passEditedValue = () => {
         setIsEdited(false);
         setNotes((oldNotes) => {
-            oldNotes[index].text = editedValue;
+            const mainIndex = oldNotes.indexOf(note);
+            oldNotes[mainIndex].text = editedValue;
             return oldNotes;
         });
     }
@@ -103,8 +105,8 @@ export const TodoItem = ({note, index, setNotes, setLeftCounter}) => {
 
     const onCheckHandle = () => {
         setNotes((oldNotes) => {
-            oldNotes[index].isDone = !oldNotes[index].isDone;
-            console.log("check", oldNotes[index].isDone, !oldNotes[index].isDone );
+            const mainIndex = oldNotes.indexOf(note);
+            oldNotes[mainIndex].isDone = !oldNotes[mainIndex].isDone;
             return oldNotes;
         });
         if (note.isDone) {
@@ -116,13 +118,10 @@ export const TodoItem = ({note, index, setNotes, setLeftCounter}) => {
     
     const deleteCurrentNote = () => {
         setNotes(oldNotes => {
-            const firstSlice = oldNotes[0] ? oldNotes.slice(0,index) : null; 
-            console.log(firstSlice);
-            const secondSlice = oldNotes.slice(index+1);
-            console.log(secondSlice);
+            const mainIndex = oldNotes.indexOf(note);
+            const firstSlice = oldNotes[0] ? oldNotes.slice(0,mainIndex) : null;
+            const secondSlice = oldNotes.slice(mainIndex+1);
             const newNotes = [...firstSlice, ...secondSlice];
-            console.log(newNotes);
-            console.log("_______");
             return newNotes;
         })
     }
@@ -134,7 +133,7 @@ export const TodoItem = ({note, index, setNotes, setLeftCounter}) => {
             <StyledCheckbox 
                 type="checkbox" 
                 checked={note.isDone}
-                onChange={() => onCheckHandle(note, index, setNotes, setLeftCounter)}
+                onChange={onCheckHandle}
             />
             {!isEdited && <StyledTodoText 
                 isDone={note.isDone}
@@ -149,7 +148,7 @@ export const TodoItem = ({note, index, setNotes, setLeftCounter}) => {
                 onDoubleClick={passEditedValue} /> }
             <StyledFlexSpace/>
             <StyledRemoveButton
-                onClick={() => deleteCurrentNote(index, setNotes)}
+                onClick={deleteCurrentNote}
                 src={XIcon}
                 alt="Delete" />
     

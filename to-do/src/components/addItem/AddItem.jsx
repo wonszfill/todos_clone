@@ -2,7 +2,7 @@ import uniqid from 'uniqid';
 import styled from "styled-components";
 
 const StyledAddItem = styled.input`
-    padding: 1rem;
+    padding: 1rem 0.4rem;
     box-sizing: border-box;
     font-size: 1.2rem;
     border: none;

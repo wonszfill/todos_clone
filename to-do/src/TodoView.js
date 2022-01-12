@@ -25,8 +25,22 @@ const StyledAppTitle = styled.h1`
 	color: ${PALLETE.titleRedish};
 	margin: 1rem;
 `
+const StyledTopBarWithInput = styled.div`
+	display: flex;
+	width: 100%;
+	justify-content: flex-start;
+	align-items: center;
+	padding: 0 0.4rem;
+`
 
-const StyledChevron = styled.img`
+const StyledToggleButton = styled.div`
+	margin: 0.8rem 0.4rem;
+	margin-left: 1.2rem;
+	padding: 0.1rem;
+	cursor: pointer;
+`
+
+const StyledToggleChevron = styled.img`
 	width:1rem;
 	opacity: 0.2;
 `
@@ -92,24 +106,10 @@ const StyledNavLink = styled(NavLink)`
 
 const StyledRemoval = styled.div`
 	cursor: pointer;
-	visibility: ${props => props.isHidden ? "visible;": "hidden;"};
+	visibility: ${props => props.isVisible ? "visible;": "hidden;"};
 	&:hover{
 		text-decoration: underline;
 	}
-	
-`
-
-const StyledToggleButton = styled.div`
-	margin-left: 1rem;
-	padding:0.1rem;
-	cursor: pointer;
-`
-
-const StyledTopBarWithInput = styled.div`
-	display: flex;
-	width: 100%;
-	justify-content: flex-start;
-	align-items: center;
 `
 
 const StyledFooter = styled.div`
@@ -131,10 +131,15 @@ export function TodoView() {
 	const [leftCounter, setLeftCounter] = useState(0);
 	const [globalIsDone, setGlobalIsDone] = useState(true);
 	const [areAnyNotes, setAreAnyNotes] = useState(false);
+	const [isDoneRemovalVisible, setIsDoneRemovalVisible] = useState(false);
 
 	useEffect(() => {
 		setAreAnyNotes(notes[0] ? true : false);
 	}, [notes])
+
+	useEffect(() => {
+		setIsDoneRemovalVisible(notes.length>(notes.length - leftCounter) ? true : false);
+	}, [leftCounter])
 
 	const leftCounterReducer = (sum, current) => {
 		return sum + current.isDone * 1;
@@ -175,19 +180,18 @@ export function TodoView() {
 				<StyledTodosWrapper>
 					<StyledTopBarWithInput>
 						<StyledToggleButton onClick={ToggleAllNotes}>
-							<StyledChevron src={ChevronDown} alt="Chevron" />
+							<StyledToggleChevron src={ChevronDown} alt="Chevron" />
 						</StyledToggleButton>
 						<AddItem setNotes={setNotes}/>
 					</StyledTopBarWithInput>
 					<StyledTransitionGroup>
-						{ displayNotes.map((note, index) => (
+						{ displayNotes.map((note) => (
 							<CSSTransition
 							key={note.id}
 							timeout={300}
 							classNames="item"
 							>
 								<TodoItem 
-									index={index}
 									note={note}
 									setNotes={setNotes}
 									setLeftCounter={setLeftCounter}
@@ -198,7 +202,7 @@ export function TodoView() {
 					<CSSTransition
 									in={areAnyNotes}
 									key={"summary"}
-									timeout={9300}
+									timeout={300}
 									classNames="summary"
 									unmountOnExit
 					>
@@ -211,12 +215,19 @@ export function TodoView() {
 								<StyledNavLink activeClassName="active" to="/active">Active</StyledNavLink> 
 								<StyledNavLink activeClassName="active" to="/completed">Completed</StyledNavLink>
 							</div>
-							<StyledRemoval 
-								onClick={ClearCompleted} 
-								isHidden={notes.length>(notes.length - leftCounter)}
+							<CSSTransition
+								in={isDoneRemovalVisible}
+								key={"removeDone"}
+								timeout={300}
+								classNames="summary"
 							>
-								Clear completed
-							</StyledRemoval>
+								<StyledRemoval 
+									onClick={ClearCompleted} 
+									isVisible={isDoneRemovalVisible}
+								>
+									Clear completed
+								</StyledRemoval>
+							</CSSTransition>
 						</StyledSummary>
 					</CSSTransition>
 				</StyledTodosWrapper>
