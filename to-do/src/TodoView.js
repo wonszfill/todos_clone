@@ -7,6 +7,8 @@ import { AddItem } from './components/addItem/AddItem';
 import { useParams } from 'react-router';
 import { NavLink } from 'react-router-dom';
 import {PALLETE} from './colors/PALLETE'
+import { CSSTransition, TransitionGroup } from 'react-transition-group'
+
 
 const StyledApp = styled.div`
 	display: flex;
@@ -43,7 +45,7 @@ const StyledSummary = styled.div`
 	position: relative;
 	display: flex;
 	justify-content: space-between;
-	padding: 1rem;
+	padding: 0;
 	background: white;
 	border-top: 1px solid ${PALLETE.borderGray};
 	width: 100%;
@@ -71,6 +73,10 @@ const StyledSummary = styled.div`
 		background: white;
 		box-shadow: 0 2px 4px 0 ${PALLETE.shadowBlack}, inset 0px 1px 1px 1px ${PALLETE.shadowBlack};
 		z-index: 2;
+	}
+	/* I wrote it like that, so it works with react animation group, padding in animated el wont work */
+	& > * {
+		margin: 1rem;
 	}
 `
 
@@ -113,11 +119,22 @@ const StyledFooter = styled.div`
 	color: ${PALLETE.borderGray};
 `
 
+const StyledTransitionGroup = styled(TransitionGroup)`
+	display: block;
+	width: 100%;
+	overflow: hidden;
+`
+
 export function TodoView() {
 
   	const [notes, setNotes] = useState([]);
 	const [leftCounter, setLeftCounter] = useState(0);
 	const [globalIsDone, setGlobalIsDone] = useState(true);
+	const [areAnyNotes, setAreAnyNotes] = useState(false);
+
+	useEffect(() => {
+		setAreAnyNotes(notes[0] ? true : false);
+	}, [notes])
 
 	const leftCounterReducer = (sum, current) => {
 		return sum + current.isDone * 1;
@@ -162,36 +179,46 @@ export function TodoView() {
 						</StyledToggleButton>
 						<AddItem setNotes={setNotes}/>
 					</StyledTopBarWithInput>
-					
-					{ displayNotes.map((note, index) => 
-						<TodoItem 
-							key={index + note}
-							note={note} 
-							index={index}
-							setNotes={setNotes}
-							setLeftCounter={setLeftCounter}
-						/>
-					)}
-					{notes[0] && <StyledSummary>
-						<div>
-							{notes.length - leftCounter} items left
-						</div>
-						<div>
-							<StyledNavLink activeClassName="active" to="/">All</StyledNavLink> 
-							<StyledNavLink activeClassName="active" to="/active">Active</StyledNavLink> 
-							<StyledNavLink activeClassName="active" to="/completed">Completed</StyledNavLink>
-						</div>
-						<StyledRemoval 
-							onClick={ClearCompleted} 
-							isHidden={notes.length>(notes.length - leftCounter)}
-						>
-							Clear completed
-						</StyledRemoval>
-					</StyledSummary>}
-					
-
-
-
+					<StyledTransitionGroup>
+						{ displayNotes.map((note, index) => (
+							<CSSTransition
+							key={note.id}
+							timeout={300}
+							classNames="item"
+							>
+								<TodoItem 
+									index={index}
+									note={note}
+									setNotes={setNotes}
+									setLeftCounter={setLeftCounter}
+								/>
+							</CSSTransition>
+						))}
+					</StyledTransitionGroup>
+					<CSSTransition
+									in={areAnyNotes}
+									key={"summary"}
+									timeout={9300}
+									classNames="summary"
+									unmountOnExit
+					>
+						<StyledSummary>
+							<div>
+								{notes.length - leftCounter} items left
+							</div>
+							<div>
+								<StyledNavLink activeClassName="active" to="/">All</StyledNavLink> 
+								<StyledNavLink activeClassName="active" to="/active">Active</StyledNavLink> 
+								<StyledNavLink activeClassName="active" to="/completed">Completed</StyledNavLink>
+							</div>
+							<StyledRemoval 
+								onClick={ClearCompleted} 
+								isHidden={notes.length>(notes.length - leftCounter)}
+							>
+								Clear completed
+							</StyledRemoval>
+						</StyledSummary>
+					</CSSTransition>
 				</StyledTodosWrapper>
 				<StyledFooter>
 				<p>Double-click to edit a todo</p>

@@ -66,3 +66,52 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+.item {
+  width:100%;
+  
+  padding: 0;
+}
+.item-enter {
+  opacity: 0;
+  max-height: 0;
+}
+.item-enter-active {
+  opacity: 1;
+  max-height: 6rem;
+  transition: max-height 300ms, opacity 300ms;  
+}
+.item-exit {
+  opacity: 1;
+  max-height: 6rem;
+}
+.item-exit-active {
+  opacity: 0;
+  max-height: 0;
+  transition: max-height 300ms, opacity 200ms; 
+  
+}
+
+.summary {
+  width:100%;
+  transform-origin: top center;
+  padding: 0;
+}
+.summary-enter {
+  opacity: 0;
+  max-height: 0;
+}
+.summary-enter-active {
+  max-height: 15rem;
+  opacity: 1;
+  transition: max-height 300ms, opacity 300ms; 
+}
+.summary-exit {
+  max-height: 15rem;
+  opacity: 1;
+}
+.summary-exit-active {
+  opacity: 0;
+  max-height: 0;
+  transition: max-height 300ms, opacity 300ms; 
+  
+}

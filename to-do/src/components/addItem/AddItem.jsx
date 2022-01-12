@@ -1,4 +1,4 @@
-import { useState } from "react";
+import uniqid from 'uniqid';
 import styled from "styled-components";
 
 const StyledAddItem = styled.input`
@@ -32,7 +32,7 @@ export const AddItem = ({setNotes}) => {
         if (e.target.value !== "") {
             const text = e.target.value;
             const isDone = false;
-            setNotes((oldNotes) => [{text: text, isDone: isDone}, ...oldNotes]);
+            setNotes((oldNotes) => [{text: text, isDone: isDone, id: uniqid()}, ...oldNotes]);
             e.target.value = "";
         }
     }

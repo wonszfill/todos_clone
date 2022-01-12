@@ -4,6 +4,7 @@ import XIcon from '../../icons/Xicon.png'
 import Check from '../../icons/Check.png'
 import { PALLETE } from "../../colors/PALLETE";
 
+
 const StyledRemoveButton = styled.img`
     width:1rem;
     padding: 0.2rem;
@@ -17,7 +18,7 @@ const StyledRemoveButton = styled.img`
 `
 
 const StyledTodoItem = styled.div`
-    padding: 0.4rem;
+    padding: 0 0.4rem;
     font-size: 1.2rem;
     border: none;
     width: 100%;
@@ -37,25 +38,37 @@ const StyledCheckbox = styled.input`
     --radius: 2rem;
     width: var(--radius);
     height: var(--radius);
-    margin-right: 0.8rem;
+    margin: 0.8rem;
     border-radius: 50%;
     border:1px solid black;
     appearance: none;
     opacity: 0.15;
     &:checked{
         background-image: url(${Check});
-        
         background-size: contain;
     }
 `
 
 const StyledTodoText = styled.span`
-    display: block;
-    flex-grow: 1;
+    position: relative;
     text-align: left;
-    text-decoration: ${(props) => props.isDone ? " line-through;" : null};
+
+    ${(props) => props.isDone ? ";" : null};
     opacity: ${(props) => props.isDone ? "0.3;" : "1;"};
     transition: opacity 0.5s;
+
+    &:after{
+        transform: ${(props) => props.isDone ? "scaleX(1)" : "scaleX(0)"};
+        transition: transform 0.8s;
+        content: "";
+        position: absolute;
+        top: 60%;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: gray;
+    }
+
 `
 
 const StyledEditText = styled.input`
@@ -65,7 +78,9 @@ const StyledEditText = styled.input`
     height: 100%;
 
 `
-
+const StyledFlexSpace = styled.div`
+    flex-grow: 1;
+`
 
 export const TodoItem = ({note, index, setNotes, setLeftCounter}) => {
 
@@ -114,29 +129,30 @@ export const TodoItem = ({note, index, setNotes, setLeftCounter}) => {
 
 
 
-    return ( 
-    <StyledTodoItem>
-        <StyledCheckbox 
-            type="checkbox" 
-            checked={note.isDone}
-            onChange={() => onCheckHandle(note, index, setNotes, setLeftCounter)}
-        />
-        {!isEdited && <StyledTodoText 
-            isDone={note.isDone}
-            onDoubleClick={() => setIsEdited(true)} >
-            {note.text}
-        </StyledTodoText> }
-        {isEdited && <StyledEditText 
-            value={editedValue}
-            onChange={(e)=>setEditedValue(e.target.value)}
-            onBlur={passEditedValue}
-            onKeyPress={onEnterEditHandle}
-            onDoubleClick={passEditedValue} /> }
-        <StyledRemoveButton
-            onClick={() => deleteCurrentNote(index, setNotes)}
-            src={XIcon}
-            alt="Delete" />
-  
-    </StyledTodoItem> 
+    return (
+        <StyledTodoItem>
+            <StyledCheckbox 
+                type="checkbox" 
+                checked={note.isDone}
+                onChange={() => onCheckHandle(note, index, setNotes, setLeftCounter)}
+            />
+            {!isEdited && <StyledTodoText 
+                isDone={note.isDone}
+                onDoubleClick={() => setIsEdited(true)} >
+                {note.text}
+            </StyledTodoText> }
+            {isEdited && <StyledEditText 
+                value={editedValue}
+                onChange={(e)=>setEditedValue(e.target.value)}
+                onBlur={passEditedValue}
+                onKeyPress={onEnterEditHandle}
+                onDoubleClick={passEditedValue} /> }
+            <StyledFlexSpace/>
+            <StyledRemoveButton
+                onClick={() => deleteCurrentNote(index, setNotes)}
+                src={XIcon}
+                alt="Delete" />
+    
+        </StyledTodoItem> 
     );
 }
