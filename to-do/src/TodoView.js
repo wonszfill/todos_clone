@@ -6,6 +6,7 @@ import { TodoItem } from './components/todoItem/todoItem';
 import { AddItem } from './components/addItem/AddItem';
 import { useParams } from 'react-router';
 import { NavLink } from 'react-router-dom';
+import {PALLETE} from './colors/PALLETE'
 
 const StyledApp = styled.div`
 	display: flex;
@@ -19,7 +20,7 @@ const StyledAppWraper = styled.div`
 
 const StyledAppTitle = styled.h1`
 	font-size: 6rem;
-	opacity: 0.1;
+	color: ${PALLETE.titleRedish};
 	margin: 1rem;
 `
 
@@ -34,7 +35,7 @@ const StyledTodosWrapper = styled.div`
 	flex-direction: column;
 	align-items: center;
 	background: white;
-	box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 25px 50px 0 rgba(0, 0, 0, 0.1);
+	box-shadow: 0 0px 4px 1px ${PALLETE.shadowBlack}, 0 25px 50px 0 rgba(0, 0, 0, 0.1);
 	z-index: 5;
 `
 
@@ -44,7 +45,7 @@ const StyledSummary = styled.div`
 	justify-content: space-between;
 	padding: 1rem;
 	background: white;
-	border-top: 1px solid rgba(128,128,128,0.3);
+	border-top: 1px solid ${PALLETE.borderGray};
 	width: 100%;
 	box-sizing: border-box;
 	box-shadow: 0 5px 4px 0 rgba(0, 0, 0, 0.2);
@@ -53,22 +54,22 @@ const StyledSummary = styled.div`
 		content: "";
 		position: absolute;
 		top: 100%;
-		left:2%;
-		width: 96%;
-		height: 0.6rem;
+		left:1.2%;
+		width: 97.6%;
+		height: 0.62rem;
 		background: rgba(256, 256, 256, 0.5);
-		box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+		box-shadow: 0 2px 4px 0 ${PALLETE.shadowBlack};
 		z-index: 1;
 	};
 	&:after{
 		content: "";
 		position: absolute;
 		top: 100%;
-		left: 1%;
-		width: 98%;
-		height: 0.3rem;
-		background: rgb(230, 230, 230);
-		box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+		left: .5%;
+		width: 99%;
+		height: 0.31rem;
+		background: white;
+		box-shadow: 0 2px 4px 0 ${PALLETE.shadowBlack}, inset 0px 1px 1px 1px ${PALLETE.shadowBlack};
 		z-index: 2;
 	}
 `
@@ -76,10 +77,10 @@ const StyledSummary = styled.div`
 const StyledNavLink = styled(NavLink)`
 	padding: 0.2rem 0.5rem;
 	text-decoration: none;
-	color: black;
+	color: inherit;
 	border-radius: 0.2rem;
 	&.active{
-		border:1px solid grey;
+		border:1px solid ${PALLETE.borderGray};
 	}
 `
 
@@ -109,7 +110,7 @@ const StyledFooter = styled.div`
 	padding: 1rem;
 	margin-top: 4rem;
 	line-height: 2;
-	color: rgba(0,0,0,0.3)
+	color: ${PALLETE.borderGray};
 `
 
 export function TodoView() {

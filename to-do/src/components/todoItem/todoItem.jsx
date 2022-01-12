@@ -2,12 +2,18 @@ import { useState } from "react";
 import styled from "styled-components";
 import XIcon from '../../icons/Xicon.png'
 import Check from '../../icons/Check.png'
+import { PALLETE } from "../../colors/PALLETE";
 
 const StyledRemoveButton = styled.img`
     width:1rem;
     padding: 0.2rem;
     margin-right: 0.3rem;
     visibility: hidden;
+    opacity: 0.3;
+    cursor: pointer;
+    &:hover{
+        opacity: 0.6;
+    }
 `
 
 const StyledTodoItem = styled.div`
@@ -17,7 +23,7 @@ const StyledTodoItem = styled.div`
     width: 100%;
     margin: 0;
     box-sizing: border-box;
-    border-top: 1px solid rgba(128,128,128,0.3);
+    border-top: 1px solid ${PALLETE.borderGray};
     display: flex;
     justify-content: start;
     align-items: center;
