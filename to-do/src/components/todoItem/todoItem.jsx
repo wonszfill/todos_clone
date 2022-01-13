@@ -106,14 +106,30 @@ export const TodoItem = ({note, setNotes, setLeftCounter}) => {
     const [isEdited, setIsEdited] = useState(false);
     const [editedValue, setEditedValue] = useState(note.text);
 
-    const passEditedValue = () => {
-        setIsEdited(false);
-        setNotes((oldNotes) => {
+    const deleteCurrentNote = () => {
+        setNotes(oldNotes => {
             const mainIndex = oldNotes.indexOf(note);
-            oldNotes[mainIndex].text = editedValue;
-            return oldNotes;
-        });
-        patchToJSON(note.id, "text", editedValue);
+            const firstSlice = oldNotes[0] ? oldNotes.slice(0,mainIndex) : null;
+            const secondSlice = oldNotes.slice(mainIndex+1);
+            const newNotes = [...firstSlice, ...secondSlice];
+            deleteFromJSON(note.id);
+            return newNotes;
+        })
+    }
+
+    const passEditedValue = (e) => {
+        setIsEdited(false);
+        if (e.target.value !== "") {
+            setNotes((oldNotes) => {
+                const mainIndex = oldNotes.indexOf(note);
+                oldNotes[mainIndex].text = editedValue;
+                return oldNotes;
+            });
+            patchToJSON(note.id, "text", editedValue);
+        } else {
+            deleteCurrentNote();
+        }
+        
     }
 
     const onEnterEditHandle  = (e) => {
@@ -136,17 +152,7 @@ export const TodoItem = ({note, setNotes, setLeftCounter}) => {
             setLeftCounter(oldCounter => oldCounter+1)
         }    
     }
-    
-    const deleteCurrentNote = () => {
-        setNotes(oldNotes => {
-            const mainIndex = oldNotes.indexOf(note);
-            const firstSlice = oldNotes[0] ? oldNotes.slice(0,mainIndex) : null;
-            const secondSlice = oldNotes.slice(mainIndex+1);
-            const newNotes = [...firstSlice, ...secondSlice];
-            deleteFromJSON(note.id);
-            return newNotes;
-        })
-    }
+
 
 
 

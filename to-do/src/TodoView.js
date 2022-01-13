@@ -240,9 +240,9 @@ export function TodoView() {
 								{notes.length - leftCounter} items left
 							</div>
 							<div>
-								<StyledNavLink activeClassName="active" to="/">All</StyledNavLink> 
-								<StyledNavLink activeClassName="active" to="/active">Active</StyledNavLink> 
-								<StyledNavLink activeClassName="active" to="/completed">Completed</StyledNavLink>
+								<StyledNavLink to="/">All</StyledNavLink> 
+								<StyledNavLink to="/active">Active</StyledNavLink> 
+								<StyledNavLink to="/completed">Completed</StyledNavLink>
 							</div>
 							<CSSTransition
 								in={isDoneRemovalVisible}

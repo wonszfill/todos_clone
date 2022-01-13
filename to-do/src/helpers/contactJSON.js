@@ -2,7 +2,6 @@ export const getFromJSON = () => {
     return fetch('http://localhost:3000/notes/')
     .then(res =>  res.json())
     .then(data => {
-        console.log(data)
         return data
     })
 

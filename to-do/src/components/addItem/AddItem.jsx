@@ -24,7 +24,6 @@ const StyledAddItem = styled.input`
         font-style: italic;
         opacity: 0.1;
     }
-
 `
 
 export const AddItem = ({setNotes}) => {
