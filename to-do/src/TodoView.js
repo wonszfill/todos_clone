@@ -184,12 +184,15 @@ export function TodoView() {
 						</StyledToggleButton>
 						<AddItem setNotes={setNotes}/>
 					</StyledTopBarWithInput>
+
+
+
 					<StyledTransitionGroup>
 						{ displayNotes.map((note) => (
 							<CSSTransition
-							key={note.id}
-							timeout={300}
-							classNames="item"
+								key={note.id}
+								timeout={300}
+								classNames="item"
 							>
 								<TodoItem 
 									note={note}
@@ -199,6 +202,13 @@ export function TodoView() {
 							</CSSTransition>
 						))}
 					</StyledTransitionGroup>
+
+
+
+
+
+
+
 					<CSSTransition
 									in={areAnyNotes}
 									key={"summary"}
