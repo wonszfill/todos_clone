@@ -127,7 +127,7 @@ const StyledTransitionGroup = styled(TransitionGroup)`
 
 export function TodoView() {
 
-  	const [notes, setNotes] = useState([]);
+  	const [notes, setNotes] = useState(JSON.parse(localStorage.notes || []));
 	const [leftCounter, setLeftCounter] = useState(0);
 	const [globalIsDone, setGlobalIsDone] = useState(true);
 	const [areAnyNotes, setAreAnyNotes] = useState(false);
@@ -135,6 +135,7 @@ export function TodoView() {
 
 	useEffect(() => {
 		setAreAnyNotes(notes[0] ? true : false);
+		localStorage.setItem('notes', JSON.stringify(notes));
 	}, [notes])
 
 	useEffect(() => {
