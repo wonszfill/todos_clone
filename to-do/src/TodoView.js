@@ -128,16 +128,8 @@ const StyledTransitionGroup = styled(TransitionGroup)`
 
 export function TodoView() {
 
-	let notesFromLS;
 
-	try{
-		notesFromLS = JSON.parse(localStorage.notes)
-	}
-	catch (e) {
-		notesFromLS = []
-	}
-
-  	const [notes, setNotes] = useState(notesFromLS);
+  	const [notes, setNotes] = useState([]);
 	const [leftCounter, setLeftCounter] = useState(0);
 	const [globalIsDone, setGlobalIsDone] = useState(true);
 	const [areAnyNotes, setAreAnyNotes] = useState(false);
@@ -153,16 +145,14 @@ export function TodoView() {
 		}
 	})
 
-	getFromJSON();
-
 	useEffect(() => {
 		setAreAnyNotes(notes[0] ? true : false);
 		localStorage.setItem('notes', JSON.stringify(notes));
-	}, [leftCounter])
+	}, [notes, leftCounter])
 
 	useEffect(() => {
 		setIsDoneRemovalVisible(notes.length>(notes.length - leftCounter) ? true : false);
-	}, [leftCounter])
+	}, [leftCounter, isSync])
 
 	const leftCounterReducer = (sum, current) => {
 		return sum + current.isDone * 1;

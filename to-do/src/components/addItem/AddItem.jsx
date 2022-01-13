@@ -34,7 +34,6 @@ export const AddItem = ({setNotes}) => {
             const text = e.target.value;
             const isDone = false;
             const newNote = {text: text, isDone: isDone, id: uniqid()}
-            const newJSON = {[newNote.id] : {text: text, isDone: isDone}}
             setNotes((oldNotes) => [newNote, ...oldNotes]);
             e.target.value = "";
             postNoteToJSON(newNote);
