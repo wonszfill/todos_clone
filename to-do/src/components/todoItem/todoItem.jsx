@@ -4,6 +4,7 @@ import XIcon from '../../icons/Xicon.png'
 import Check from '../../icons/Check.png'
 import { PALLETE } from "../../colors/PALLETE";
 
+import { patchToJSON, deleteFromJSON } from "../../helpers/contactJSON";
 
 const StyledRemoveButton = styled.img`
     position: absolute;
@@ -112,6 +113,7 @@ export const TodoItem = ({note, setNotes, setLeftCounter}) => {
             oldNotes[mainIndex].text = editedValue;
             return oldNotes;
         });
+        patchToJSON(note.id, "text", editedValue);
     }
 
     const onEnterEditHandle  = (e) => {
@@ -123,7 +125,9 @@ export const TodoItem = ({note, setNotes, setLeftCounter}) => {
     const onCheckHandle = () => {
         setNotes((oldNotes) => {
             const mainIndex = oldNotes.indexOf(note);
-            oldNotes[mainIndex].isDone = !oldNotes[mainIndex].isDone;
+            const newIsDone = !oldNotes[mainIndex].isDone;
+            oldNotes[mainIndex].isDone = newIsDone;
+            patchToJSON(note.id, "isDone", newIsDone);
             return oldNotes;
         });
         if (note.isDone) {
@@ -139,6 +143,7 @@ export const TodoItem = ({note, setNotes, setLeftCounter}) => {
             const firstSlice = oldNotes[0] ? oldNotes.slice(0,mainIndex) : null;
             const secondSlice = oldNotes.slice(mainIndex+1);
             const newNotes = [...firstSlice, ...secondSlice];
+            deleteFromJSON(note.id);
             return newNotes;
         })
     }

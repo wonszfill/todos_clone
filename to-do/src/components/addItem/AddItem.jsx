@@ -1,5 +1,6 @@
 import uniqid from 'uniqid';
 import styled from "styled-components";
+import { postNoteToJSON } from '../../helpers/contactJSON';
 
 const StyledAddItem = styled.input`
     padding: 1rem 0.4rem;
@@ -32,8 +33,11 @@ export const AddItem = ({setNotes}) => {
         if (e.target.value !== "") {
             const text = e.target.value;
             const isDone = false;
-            setNotes((oldNotes) => [{text: text, isDone: isDone, id: uniqid()}, ...oldNotes]);
+            const newNote = {text: text, isDone: isDone, id: uniqid()}
+            const newJSON = {[newNote.id] : {text: text, isDone: isDone}}
+            setNotes((oldNotes) => [newNote, ...oldNotes]);
             e.target.value = "";
+            postNoteToJSON(newNote);
         }
     }
 

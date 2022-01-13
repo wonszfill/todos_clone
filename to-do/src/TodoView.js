@@ -9,6 +9,7 @@ import { NavLink } from 'react-router-dom';
 import {PALLETE} from './colors/PALLETE'
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
 
+import { getFromJSON, patchToJSON, deleteFromJSON } from './helpers/contactJSON';
 
 const StyledApp = styled.div`
 	display: flex;
@@ -142,10 +143,21 @@ export function TodoView() {
 	const [areAnyNotes, setAreAnyNotes] = useState(false);
 	const [isDoneRemovalVisible, setIsDoneRemovalVisible] = useState(false);
 
+	const [isSync, setIsSync] = useState(false);
+
+	useEffect(() => {
+		if (!isSync) {
+			getFromJSON()
+			.then(data => setNotes(data));
+			setIsSync(true);
+		}
+	})
+
+	getFromJSON();
+
 	useEffect(() => {
 		setAreAnyNotes(notes[0] ? true : false);
 		localStorage.setItem('notes', JSON.stringify(notes));
-		console.log(localStorage.notes)
 	}, [leftCounter])
 
 	useEffect(() => {
@@ -157,12 +169,18 @@ export function TodoView() {
 	}
 
 	const ClearCompleted = () => {
+		notes.filter((note => note.isDone)).forEach(note => {
+			deleteFromJSON(note.id);
+		});
 		setNotes(oldNotes => oldNotes.filter((note => !note.isDone)))
 	}
 
 	const ToggleAllNotes = () => {
-		setNotes(oldNotes => oldNotes.map(oldNote =>{ 
-			oldNote.isDone=globalIsDone;
+		setNotes(oldNotes => oldNotes.map(oldNote =>{
+			if (oldNote.isDone !== globalIsDone) {
+				patchToJSON(oldNote.id, "isDone", globalIsDone)
+			}
+			oldNote.isDone = globalIsDone;
 			return oldNote;
 			})
 		);
