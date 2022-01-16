@@ -18,6 +18,7 @@ app.use(
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE"
   })
 )
+app.use(express.json())
 
 
 var uri = "mongodb://localhost:27017/todo";
@@ -35,17 +36,10 @@ async function main() {
   });
     
   const Note = mongoose.model('Note', noteSchema);
-  const TestNote = new Note({ 
-    text: 'Test note title',
-    _id: uniqid(),
-    isDone: true
-   });
 
-  await TestNote.save();
 
-  const notes = await Note.find();
-
-  app.get('/', (req, res) => {
+  app.get('/', async (req, res) => {
+    const notes = await Note.find();
     res.json(notes)
   })
   
@@ -57,6 +51,24 @@ async function main() {
 
     console.log(note);
     res.json(note);
+  })
+
+  app.post('/', async (req, res) => {
+
+    console.log(req.body)
+
+    const id = req.body.id;
+    const text = req.body.text;
+    const isDone = req.body.isDone;
+
+    const newNote = new Note({
+      text: text,
+      _id: id,
+      isDone: isDone
+    })
+
+    await newNote.save();
+ 
   })
 
 }

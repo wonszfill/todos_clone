@@ -28,6 +28,18 @@ const StyledAddItem = styled.input`
 
 export const AddItem = ({setNotes}) => {
 
+    const updateMongo = (note) => {
+		fetch('http://localhost:4000/', {
+            method: "POST",
+            headers: {
+                "Content-type": "application/json",
+            },
+            body: JSON.stringify(note)
+        })
+        console.log(JSON.stringify(note))
+    }
+
+
     const addNote = (e) => {
         if (e.target.value !== "") {
             const text = e.target.value;
@@ -36,6 +48,7 @@ export const AddItem = ({setNotes}) => {
             setNotes((oldNotes) => [newNote, ...oldNotes]);
             e.target.value = "";
             postNoteToJSON(newNote);
+            updateMongo(newNote);
         }
     }
 
