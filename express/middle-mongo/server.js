@@ -20,7 +20,7 @@ app.use(
 )
 
 
-var uri = "mongodb://localhost:27017/details";
+var uri = "mongodb://localhost:27017/todo";
 
 async function main() {
   await mongoose.connect(uri, { useUnifiedTopology: true, useNewUrlParser: true });
@@ -49,15 +49,12 @@ async function main() {
     res.json(notes)
   })
   
-  app.get('/:id', function (req, res) {
-
-    async function getNote(id) {
-      return await Note.find({_id: id});
-    }
+  app.get('/:id', async function (req, res) {
 
     const id = req.params.id;
 
-    const note = getNote(id);
+    const note = await Note.findById(id);
+
     console.log(note);
     res.json(note);
   })
