@@ -32,7 +32,8 @@ export const AddItem = ({setNotes}) => {
         if (e.target.value !== "") {
             const text = e.target.value;
             const isDone = false;
-            const newNote = {text: text, isDone: isDone, _id: uniqid()}
+            const newNote = {text: text, isDone: isDone, _id: uniqid("note-")}
+            console.log(newNote._id)
             setNotes((oldNotes) => [newNote, ...oldNotes]);
             e.target.value = "";
             mongoPostNewNote(newNote);

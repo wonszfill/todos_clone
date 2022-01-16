@@ -10,7 +10,7 @@ import {PALLETE} from './colors/PALLETE'
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
 
 import { getFromJSON, patchToJSON, deleteFromJSON } from './helpers/contactJSON';
-import { mongoMultipleDelete, mongoGetAllNotes } from './helpers/contactMongo';
+import { mongoMultipleDelete, mongoGetAllNotes, mongoMultipleToggleDone } from './helpers/contactMongo';
 
 export function TodoView() {
 
@@ -50,10 +50,8 @@ export function TodoView() {
 	}
 
 	const ToggleAllNotes = () => {
+		mongoMultipleToggleDone(globalIsDone);
 		setNotes(oldNotes => oldNotes.map(oldNote =>{
-			if (oldNote.isDone !== globalIsDone) {
-				patchToJSON(oldNote.id, "isDone", globalIsDone)
-			}
 			oldNote.isDone = globalIsDone;
 			return oldNote;
 			})

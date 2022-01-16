@@ -42,16 +42,6 @@ async function main() {
     const notes = await Note.find();
     res.json(notes)
   })
-  
-  app.get('/notes/:id', async function (req, res) {
-
-    const id = req.params.id;
-
-    const note = await Note.findById(id);
-
-    console.log(note);
-    res.json(note);
-  })
 
   app.post('/notes', async (req, res) => {
 
@@ -82,6 +72,17 @@ async function main() {
       await Note.findByIdAndRemove(item);
     }) 
     res.send("Deleted");
+  })
+
+  app.patch('/notes/setdone', async (req, res) => {
+
+    console.log("body: ", req.body)
+
+    const isDone = req.body.isDone;
+
+    const update = await Note.updateMany({isDone: !isDone}, {isDone: isDone})
+
+    res.send("Updated", update.modifiedCount, "notes.");
   })
 
 }
