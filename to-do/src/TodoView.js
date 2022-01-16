@@ -139,17 +139,18 @@ export function TodoView() {
 
 	useEffect(() => {
 		if (!isSync) {
-			getFromJSON()
+			fetch('http://localhost:4000/')
+			.then(res => res.json())
 			.then(data => setNotes(data));
 			setIsSync(true);
 		}
 	})
-
-	useEffect(() => {
+	console.log(notes)
+/* 	useEffect(() => {
 		fetch('http://localhost:4000/')
 		.then(res => res.json())
 		.then(data => console.log(data))
-	})
+	}) */
 
 	useEffect(() => {
 		setAreAnyNotes(notes[0] ? true : false);
@@ -168,6 +169,15 @@ export function TodoView() {
 		notes.filter((note => note.isDone)).forEach(note => {
 			deleteFromJSON(note.id);
 		});
+		const deletedNoteIds = notes.filter((note => note.isDone))
+			.map(note => note._id);
+			fetch(`http://localhost:4000/`, {
+				method: "DELETE",
+				headers: {
+					"Content-type": "application/json",
+				},
+				body: JSON.stringify(deletedNoteIds)
+			})
 		setNotes(oldNotes => oldNotes.filter((note => !note.isDone)))
 	}
 

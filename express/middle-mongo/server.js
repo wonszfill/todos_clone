@@ -68,7 +68,20 @@ async function main() {
     })
 
     await newNote.save();
- 
+    res.json(newNote);
+  })
+
+  app.delete('/', async (req, res) => {
+
+    console.log("body: ", req.body)
+
+    const idList = req.body;
+
+    await idList.forEach( async (item) => {
+      console.log(item);
+      await Note.findByIdAndRemove(item);
+    }) 
+    res.send("Deleted");
   })
 
 }
