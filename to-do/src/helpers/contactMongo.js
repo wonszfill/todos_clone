@@ -25,8 +25,6 @@ export const mongoPostNewNote = (note) => {
     })
 }
 
-
-
 export const mongoMultipleToggleDone = (newIsDone) => {
     console.log(newIsDone);
     return fetch(`http://localhost:4000/notes/setdone`, {
@@ -40,3 +38,17 @@ export const mongoMultipleToggleDone = (newIsDone) => {
     })
 }
     
+export const mongoPatchOne = (id, key, val) => {
+    console.log(id, key, val);
+    return fetch(`http://localhost:4000/notes`, {
+        method: "PATCH",
+        headers: {
+            "Content-type": "application/json",
+        },
+        body: JSON.stringify({
+            _id: id,
+            key: key,
+            val: val
+        })
+    })
+}

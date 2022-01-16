@@ -76,13 +76,25 @@ async function main() {
 
   app.patch('/notes/setdone', async (req, res) => {
 
-    console.log("body: ", req.body)
-
     const isDone = req.body.isDone;
-
     const update = await Note.updateMany({isDone: !isDone}, {isDone: isDone})
 
     res.send("Updated", update.modifiedCount, "notes.");
+  })
+
+  app.patch('/notes', async (req, res) => {
+
+    console.log("body: ", req.body)
+
+    const _id = req.body._id;
+    const key = req.body.key;
+    const val = req.body.val;
+
+    const patch = {[key]: val}
+
+    const update = await Note.updateOne({_id: _id}, patch)
+
+    res.send("Updated", update.upsertedId, "note.");
   })
 
 }

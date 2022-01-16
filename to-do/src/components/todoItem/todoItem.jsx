@@ -5,7 +5,7 @@ import Check from '../../icons/Check.png'
 import { PALLETE } from "../../colors/PALLETE";
 
 import { patchToJSON, deleteFromJSON } from "../../helpers/contactJSON";
-import { mongoMultipleDelete } from '../../helpers/contactMongo';
+import { mongoMultipleDelete, mongoPatchOne } from '../../helpers/contactMongo';
 
 
 export const TodoItem = ({note, setNotes, setLeftCounter}) => {
@@ -36,7 +36,6 @@ export const TodoItem = ({note, setNotes, setLeftCounter}) => {
         } else {
             deleteCurrentNote();
         }
-        
     }
 
     const onEnterEditHandle  = (e) => {
@@ -50,18 +49,16 @@ export const TodoItem = ({note, setNotes, setLeftCounter}) => {
             const mainIndex = oldNotes.indexOf(note);
             const newIsDone = !oldNotes[mainIndex].isDone;
             oldNotes[mainIndex].isDone = newIsDone;
-            patchToJSON(note.id, "isDone", newIsDone);
+            mongoPatchOne(note._id, "isDone", newIsDone);
             return oldNotes;
         });
+        
         if (note.isDone) {
             setLeftCounter(oldCounter => oldCounter-1);
         }else{
             setLeftCounter(oldCounter => oldCounter+1)
         }    
     }
-
-
-
 
     return (
         <StyledTodoItem>
