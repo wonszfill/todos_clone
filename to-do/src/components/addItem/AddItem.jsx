@@ -1,6 +1,6 @@
 import uniqid from 'uniqid';
 import styled from "styled-components";
-import { postNoteToJSON } from '../../helpers/contactJSON';
+import { mongoPostNewNote } from '../../helpers/contactMongo';
 
 const StyledAddItem = styled.input`
     padding: 1rem 0.4rem;
@@ -28,27 +28,14 @@ const StyledAddItem = styled.input`
 
 export const AddItem = ({setNotes}) => {
 
-    const updateMongo = (note) => {
-		fetch('http://localhost:4000/', {
-            method: "POST",
-            headers: {
-                "Content-type": "application/json",
-            },
-            body: JSON.stringify(note)
-        })
-        console.log(JSON.stringify(note))
-    }
-
-
     const addNote = (e) => {
         if (e.target.value !== "") {
             const text = e.target.value;
             const isDone = false;
-            const newNote = {text: text, isDone: isDone, id: uniqid()}
+            const newNote = {text: text, isDone: isDone, _id: uniqid()}
             setNotes((oldNotes) => [newNote, ...oldNotes]);
             e.target.value = "";
-            postNoteToJSON(newNote);
-            updateMongo(newNote);
+            mongoPostNewNote(newNote);
         }
     }
 

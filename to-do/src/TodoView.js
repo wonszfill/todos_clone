@@ -10,6 +10,146 @@ import {PALLETE} from './colors/PALLETE'
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
 
 import { getFromJSON, patchToJSON, deleteFromJSON } from './helpers/contactJSON';
+import { mongoMultipleDelete, mongoGetAllNotes } from './helpers/contactMongo';
+
+export function TodoView() {
+
+  	const [notes, setNotes] = useState([]);
+	const [leftCounter, setLeftCounter] = useState(0);
+	const [globalIsDone, setGlobalIsDone] = useState(true);
+	const [areAnyNotes, setAreAnyNotes] = useState(false);
+	const [isDoneRemovalVisible, setIsDoneRemovalVisible] = useState(false);
+	const [isSync, setIsSync] = useState(false);
+
+	useEffect(() => {
+		if (!isSync) {
+			mongoGetAllNotes()
+			.then(data => setNotes(data));
+			setIsSync(true);
+		}
+	})
+
+	useEffect(() => {
+		setAreAnyNotes(notes[0] ? true : false);
+		localStorage.setItem('notes', JSON.stringify(notes));
+	}, [notes, leftCounter])
+
+	useEffect(() => {
+		setIsDoneRemovalVisible(notes.length>(notes.length - leftCounter) ? true : false);
+	}, [leftCounter, isSync])
+
+	const leftCounterReducer = (sum, current) => {
+		return sum + current.isDone * 1;
+	}
+
+	const ClearCompleted = async () => {
+		const deletedNoteIds = await notes.filter((note => note.isDone))
+			.map(note => note._id);
+		mongoMultipleDelete(deletedNoteIds);
+		setNotes(oldNotes => oldNotes.filter((note => !note.isDone)))
+	}
+
+	const ToggleAllNotes = () => {
+		setNotes(oldNotes => oldNotes.map(oldNote =>{
+			if (oldNote.isDone !== globalIsDone) {
+				patchToJSON(oldNote.id, "isDone", globalIsDone)
+			}
+			oldNote.isDone = globalIsDone;
+			return oldNote;
+			})
+		);
+		setGlobalIsDone(oldState => !oldState);
+	}
+
+	useEffect(()=>{
+		setLeftCounter(notes.reduce(leftCounterReducer, 0))
+	});
+
+	const view = useParams().view;
+
+	let displayNotes = notes;
+
+		if (view === "active"){
+			displayNotes = (notes.filter(note => note.isDone === false))
+		}
+		if (view === "completed"){
+			displayNotes = (notes.filter(note => note.isDone === true))
+		}
+
+  	return (
+	  	<StyledApp>
+			<StyledAppWraper>
+				<StyledAppTitle>todos</StyledAppTitle>
+				<StyledTodosWrapper>
+					<StyledTopBarWithInput>
+						<StyledToggleButton onClick={ToggleAllNotes}>
+							<StyledToggleChevron src={ChevronDown} alt="Chevron" />
+						</StyledToggleButton>
+						<AddItem setNotes={setNotes}/>
+					</StyledTopBarWithInput>
+
+					<StyledTransitionGroup>
+						{ displayNotes.map((note) => (
+							<CSSTransition
+								key={note.id}
+								timeout={300}
+								classNames="item"
+							>
+								<TodoItem 
+									note={note}
+									setNotes={setNotes}
+									setLeftCounter={setLeftCounter}
+								/>
+							</CSSTransition>
+						))}
+					</StyledTransitionGroup>
+
+					<CSSTransition
+									in={areAnyNotes}
+									key={"summary"}
+									timeout={300}
+									classNames="summary"
+									unmountOnExit
+					>
+						<StyledSummary>
+							<div>
+								{notes.length - leftCounter} items left
+							</div>
+							<div>
+								<StyledNavLink to="/">All</StyledNavLink> 
+								<StyledNavLink to="/active">Active</StyledNavLink> 
+								<StyledNavLink to="/completed">Completed</StyledNavLink>
+							</div>
+							<CSSTransition
+								in={isDoneRemovalVisible}
+								key={"removeDone"}
+								timeout={300}
+								classNames="summary"
+							>
+								<StyledRemoval 
+									onClick={ClearCompleted} 
+									isVisible={isDoneRemovalVisible}
+								>
+									Clear completed
+								</StyledRemoval>
+							</CSSTransition>
+						</StyledSummary>
+					</CSSTransition>
+				</StyledTodosWrapper>
+				<StyledFooter>
+				<p>Double-click to edit a todo</p>
+				<p>
+				Created by Oscar Godson
+				</p><p>
+				Refactored by Christoph Burgmer
+				</p><p>
+				Recreated by Przemek Wojszwiłło
+				</p>
+				</StyledFooter>
+			</StyledAppWraper>
+		</StyledApp>
+	)
+}
 
 const StyledApp = styled.div`
 	display: flex;
@@ -125,160 +265,3 @@ const StyledTransitionGroup = styled(TransitionGroup)`
 	width: 100%;
 	overflow: hidden;
 `
-
-export function TodoView() {
-
-
-  	const [notes, setNotes] = useState([]);
-	const [leftCounter, setLeftCounter] = useState(0);
-	const [globalIsDone, setGlobalIsDone] = useState(true);
-	const [areAnyNotes, setAreAnyNotes] = useState(false);
-	const [isDoneRemovalVisible, setIsDoneRemovalVisible] = useState(false);
-
-	const [isSync, setIsSync] = useState(false);
-
-	useEffect(() => {
-		if (!isSync) {
-			fetch('http://localhost:4000/')
-			.then(res => res.json())
-			.then(data => setNotes(data));
-			setIsSync(true);
-		}
-	})
-	console.log(notes)
-/* 	useEffect(() => {
-		fetch('http://localhost:4000/')
-		.then(res => res.json())
-		.then(data => console.log(data))
-	}) */
-
-	useEffect(() => {
-		setAreAnyNotes(notes[0] ? true : false);
-		localStorage.setItem('notes', JSON.stringify(notes));
-	}, [notes, leftCounter])
-
-	useEffect(() => {
-		setIsDoneRemovalVisible(notes.length>(notes.length - leftCounter) ? true : false);
-	}, [leftCounter, isSync])
-
-	const leftCounterReducer = (sum, current) => {
-		return sum + current.isDone * 1;
-	}
-
-	const ClearCompleted = () => {
-		notes.filter((note => note.isDone)).forEach(note => {
-			deleteFromJSON(note.id);
-		});
-		const deletedNoteIds = notes.filter((note => note.isDone))
-			.map(note => note._id);
-			fetch(`http://localhost:4000/`, {
-				method: "DELETE",
-				headers: {
-					"Content-type": "application/json",
-				},
-				body: JSON.stringify(deletedNoteIds)
-			})
-		setNotes(oldNotes => oldNotes.filter((note => !note.isDone)))
-	}
-
-	const ToggleAllNotes = () => {
-		setNotes(oldNotes => oldNotes.map(oldNote =>{
-			if (oldNote.isDone !== globalIsDone) {
-				patchToJSON(oldNote.id, "isDone", globalIsDone)
-			}
-			oldNote.isDone = globalIsDone;
-			return oldNote;
-			})
-		);
-		setGlobalIsDone(oldState => !oldState);
-	}
-
-	useEffect(()=>{
-		setLeftCounter(notes.reduce(leftCounterReducer, 0))
-	});
-
-	const view = useParams().view;
-
-	let displayNotes = notes;
-
-		if (view === "active"){
-			displayNotes = (notes.filter(note => note.isDone === false))
-		}
-		if (view === "completed"){
-			displayNotes = (notes.filter(note => note.isDone === true))
-		}
-
-  	return (
-	  	<StyledApp>
-			<StyledAppWraper>
-				<StyledAppTitle>todos</StyledAppTitle>
-				<StyledTodosWrapper>
-					<StyledTopBarWithInput>
-						<StyledToggleButton onClick={ToggleAllNotes}>
-							<StyledToggleChevron src={ChevronDown} alt="Chevron" />
-						</StyledToggleButton>
-						<AddItem setNotes={setNotes}/>
-					</StyledTopBarWithInput>
-
-					<StyledTransitionGroup>
-						{ displayNotes.map((note) => (
-							<CSSTransition
-								key={note.id}
-								timeout={300}
-								classNames="item"
-							>
-								<TodoItem 
-									note={note}
-									setNotes={setNotes}
-									setLeftCounter={setLeftCounter}
-								/>
-							</CSSTransition>
-						))}
-					</StyledTransitionGroup>
-
-					<CSSTransition
-									in={areAnyNotes}
-									key={"summary"}
-									timeout={300}
-									classNames="summary"
-									unmountOnExit
-					>
-						<StyledSummary>
-							<div>
-								{notes.length - leftCounter} items left
-							</div>
-							<div>
-								<StyledNavLink to="/">All</StyledNavLink> 
-								<StyledNavLink to="/active">Active</StyledNavLink> 
-								<StyledNavLink to="/completed">Completed</StyledNavLink>
-							</div>
-							<CSSTransition
-								in={isDoneRemovalVisible}
-								key={"removeDone"}
-								timeout={300}
-								classNames="summary"
-							>
-								<StyledRemoval 
-									onClick={ClearCompleted} 
-									isVisible={isDoneRemovalVisible}
-								>
-									Clear completed
-								</StyledRemoval>
-							</CSSTransition>
-						</StyledSummary>
-					</CSSTransition>
-				</StyledTodosWrapper>
-				<StyledFooter>
-				<p>Double-click to edit a todo</p>
-				<p>
-				Created by Oscar Godson
-				</p><p>
-				Refactored by Christoph Burgmer
-				</p><p>
-				Recreated by Przemek Wojszwiłło
-				</p>
-				</StyledFooter>
-			</StyledAppWraper>
-		</StyledApp>
-	)
-}

@@ -38,12 +38,12 @@ async function main() {
   const Note = mongoose.model('Note', noteSchema);
 
 
-  app.get('/', async (req, res) => {
+  app.get('/notes', async (req, res) => {
     const notes = await Note.find();
     res.json(notes)
   })
   
-  app.get('/:id', async function (req, res) {
+  app.get('/notes/:id', async function (req, res) {
 
     const id = req.params.id;
 
@@ -53,11 +53,11 @@ async function main() {
     res.json(note);
   })
 
-  app.post('/', async (req, res) => {
+  app.post('/notes', async (req, res) => {
 
     console.log(req.body)
 
-    const id = req.body.id;
+    const id = req.body._id;
     const text = req.body.text;
     const isDone = req.body.isDone;
 
@@ -71,7 +71,7 @@ async function main() {
     res.json(newNote);
   })
 
-  app.delete('/', async (req, res) => {
+  app.delete('/notes', async (req, res) => {
 
     console.log("body: ", req.body)
 

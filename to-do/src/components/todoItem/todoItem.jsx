@@ -5,6 +5,94 @@ import Check from '../../icons/Check.png'
 import { PALLETE } from "../../colors/PALLETE";
 
 import { patchToJSON, deleteFromJSON } from "../../helpers/contactJSON";
+import { mongoMultipleDelete } from '../../helpers/contactMongo';
+
+
+export const TodoItem = ({note, setNotes, setLeftCounter}) => {
+
+    const [isEdited, setIsEdited] = useState(false);
+    const [editedValue, setEditedValue] = useState(note.text);
+
+    const deleteCurrentNote = () => {
+        setNotes(oldNotes => {
+            const mainIndex = oldNotes.indexOf(note);
+            const firstSlice = oldNotes[0] ? oldNotes.slice(0,mainIndex) : null;
+            const secondSlice = oldNotes.slice(mainIndex+1);
+            const newNotes = [...firstSlice, ...secondSlice];
+            mongoMultipleDelete([note._id]);
+            return newNotes;
+        })
+    }
+
+    const passEditedValue = (e) => {
+        setIsEdited(false);
+        if (e.target.value !== "") {
+            setNotes((oldNotes) => {
+                const mainIndex = oldNotes.indexOf(note);
+                oldNotes[mainIndex].text = editedValue;
+                return oldNotes;
+            });
+            patchToJSON(note.id, "text", editedValue);
+        } else {
+            deleteCurrentNote();
+        }
+        
+    }
+
+    const onEnterEditHandle  = (e) => {
+        if (e.key === "Enter") {
+            passEditedValue();
+        }
+    }
+
+    const onCheckHandle = () => {
+        setNotes((oldNotes) => {
+            const mainIndex = oldNotes.indexOf(note);
+            const newIsDone = !oldNotes[mainIndex].isDone;
+            oldNotes[mainIndex].isDone = newIsDone;
+            patchToJSON(note.id, "isDone", newIsDone);
+            return oldNotes;
+        });
+        if (note.isDone) {
+            setLeftCounter(oldCounter => oldCounter-1);
+        }else{
+            setLeftCounter(oldCounter => oldCounter+1)
+        }    
+    }
+
+
+
+
+    return (
+        <StyledTodoItem>
+            <StyledCheckbox 
+                type="checkbox" 
+                checked={note.isDone}
+                onChange={onCheckHandle}
+            />
+            {!isEdited && <StyledTodoText 
+                isDone={note.isDone}
+                onDoubleClick={() => setIsEdited(true)} >
+                {note.text}
+            </StyledTodoText> }
+            {isEdited && <StyledEditText 
+                autoFocus 
+                value={editedValue}
+                onChange={(e)=>{
+                    setEditedValue(e.target.value);
+                }}
+                onBlur={passEditedValue}
+                onKeyPress={onEnterEditHandle}
+                 /> }
+            <StyledRemoveButton
+                onClick={deleteCurrentNote}
+                src={XIcon}
+                alt="Delete" />
+    
+        </StyledTodoItem> 
+    );
+}
+
 
 const StyledRemoveButton = styled.img`
     position: absolute;
@@ -100,88 +188,3 @@ const StyledEditText = styled.input`
         animation-duration: 1.5s;
     }
 `
-
-export const TodoItem = ({note, setNotes, setLeftCounter}) => {
-
-    const [isEdited, setIsEdited] = useState(false);
-    const [editedValue, setEditedValue] = useState(note.text);
-
-    const deleteCurrentNote = () => {
-        setNotes(oldNotes => {
-            const mainIndex = oldNotes.indexOf(note);
-            const firstSlice = oldNotes[0] ? oldNotes.slice(0,mainIndex) : null;
-            const secondSlice = oldNotes.slice(mainIndex+1);
-            const newNotes = [...firstSlice, ...secondSlice];
-            deleteFromJSON(note.id);
-            return newNotes;
-        })
-    }
-
-    const passEditedValue = (e) => {
-        setIsEdited(false);
-        if (e.target.value !== "") {
-            setNotes((oldNotes) => {
-                const mainIndex = oldNotes.indexOf(note);
-                oldNotes[mainIndex].text = editedValue;
-                return oldNotes;
-            });
-            patchToJSON(note.id, "text", editedValue);
-        } else {
-            deleteCurrentNote();
-        }
-        
-    }
-
-    const onEnterEditHandle  = (e) => {
-        if (e.key === "Enter") {
-            passEditedValue();
-        }
-    }
-
-    const onCheckHandle = () => {
-        setNotes((oldNotes) => {
-            const mainIndex = oldNotes.indexOf(note);
-            const newIsDone = !oldNotes[mainIndex].isDone;
-            oldNotes[mainIndex].isDone = newIsDone;
-            patchToJSON(note.id, "isDone", newIsDone);
-            return oldNotes;
-        });
-        if (note.isDone) {
-            setLeftCounter(oldCounter => oldCounter-1);
-        }else{
-            setLeftCounter(oldCounter => oldCounter+1)
-        }    
-    }
-
-
-
-
-    return (
-        <StyledTodoItem>
-            <StyledCheckbox 
-                type="checkbox" 
-                checked={note.isDone}
-                onChange={onCheckHandle}
-            />
-            {!isEdited && <StyledTodoText 
-                isDone={note.isDone}
-                onDoubleClick={() => setIsEdited(true)} >
-                {note.text}
-            </StyledTodoText> }
-            {isEdited && <StyledEditText 
-                autoFocus 
-                value={editedValue}
-                onChange={(e)=>{
-                    setEditedValue(e.target.value);
-                }}
-                onBlur={passEditedValue}
-                onKeyPress={onEnterEditHandle}
-                 /> }
-            <StyledRemoveButton
-                onClick={deleteCurrentNote}
-                src={XIcon}
-                alt="Delete" />
-    
-        </StyledTodoItem> 
-    );
-}
