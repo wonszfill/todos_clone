@@ -146,6 +146,12 @@ export function TodoView() {
 	})
 
 	useEffect(() => {
+		fetch('http://localhost:4000/')
+		.then(res => res.json())
+		.then(data => console.log(data))
+	})
+
+	useEffect(() => {
 		setAreAnyNotes(notes[0] ? true : false);
 		localStorage.setItem('notes', JSON.stringify(notes));
 	}, [notes, leftCounter])
@@ -204,8 +210,6 @@ export function TodoView() {
 						<AddItem setNotes={setNotes}/>
 					</StyledTopBarWithInput>
 
-
-
 					<StyledTransitionGroup>
 						{ displayNotes.map((note) => (
 							<CSSTransition
@@ -221,12 +225,6 @@ export function TodoView() {
 							</CSSTransition>
 						))}
 					</StyledTransitionGroup>
-
-
-
-
-
-
 
 					<CSSTransition
 									in={areAnyNotes}
