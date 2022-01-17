@@ -20,6 +20,13 @@ app.use(
 app.use(express.json())
 
 
+app.post('/login', async (req, res) => {
+  console.log(req.body);
+  res.send()
+})
+
+
+
 var uri = "mongodb://localhost:27017/todo";
 
 async function main() {

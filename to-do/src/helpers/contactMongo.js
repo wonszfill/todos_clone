@@ -52,3 +52,13 @@ export const mongoPatchOne = (id, key, val) => {
         })
     })
 }
+
+export const mongoLogin = (data) => {
+    return fetch('http://localhost:4000/login', {
+        method: "POST",
+        headers: {
+            "Content-type": "application/json",
+        },
+        body: JSON.stringify(data)
+    })
+}
