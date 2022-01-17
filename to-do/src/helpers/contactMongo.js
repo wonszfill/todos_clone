@@ -16,7 +16,7 @@ export const mongoMultipleDelete = (idList) => {
 }
     
 export const mongoPostNewNote = (note) => {
-    fetch('http://localhost:4000/notes', {
+    return fetch('http://localhost:4000/notes', {
         method: "POST",
         headers: {
             "Content-type": "application/json",

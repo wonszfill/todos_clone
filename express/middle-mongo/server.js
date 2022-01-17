@@ -1,5 +1,4 @@
 import express from "express";
-import uniqid from 'uniqid'
 import cors from 'cors'
 
 const app = express();
@@ -32,7 +31,8 @@ async function main() {
   const noteSchema = new mongoose.Schema({
     text: String,
     _id: String,
-    isDone: Boolean
+    isDone: Boolean,
+    created: Number
   });
     
   const Note = mongoose.model('Note', noteSchema);
@@ -40,7 +40,10 @@ async function main() {
 
   app.get('/notes', async (req, res) => {
     const notes = await Note.find();
-    res.json(notes)
+    notes.sort((a,b) => {
+      return b.created - a.created;
+    })
+    res.json(notes);
   })
 
   app.post('/notes', async (req, res) => {
@@ -50,11 +53,13 @@ async function main() {
     const id = req.body._id;
     const text = req.body.text;
     const isDone = req.body.isDone;
+    const created = req.body.created;
 
     const newNote = new Note({
       text: text,
       _id: id,
-      isDone: isDone
+      isDone: isDone,
+      created: created
     })
 
     await newNote.save();
@@ -68,7 +73,6 @@ async function main() {
     const idList = req.body;
 
     await idList.forEach( async (item) => {
-      console.log(item);
       await Note.findByIdAndRemove(item);
     }) 
     res.send("Deleted");
@@ -79,7 +83,7 @@ async function main() {
     const isDone = req.body.isDone;
     const update = await Note.updateMany({isDone: !isDone}, {isDone: isDone})
 
-    res.send("Updated", update.modifiedCount, "notes.");
+    res.send(`Updated ${update.modifiedCount} notes.`);
   })
 
   app.patch('/notes', async (req, res) => {
@@ -94,7 +98,7 @@ async function main() {
 
     const update = await Note.updateOne({_id: _id}, patch)
 
-    res.send("Updated", update.upsertedId, "note.");
+    res.send(`Updated ${update.modifiedCount} note.`);
   })
 
 }

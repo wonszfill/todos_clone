@@ -4,7 +4,6 @@ import XIcon from '../../icons/Xicon.png'
 import Check from '../../icons/Check.png'
 import { PALLETE } from "../../colors/PALLETE";
 
-import { patchToJSON, deleteFromJSON } from "../../helpers/contactJSON";
 import { mongoMultipleDelete, mongoPatchOne } from '../../helpers/contactMongo';
 
 
@@ -12,6 +11,8 @@ export const TodoItem = ({note, setNotes, setLeftCounter}) => {
 
     const [isEdited, setIsEdited] = useState(false);
     const [editedValue, setEditedValue] = useState(note.text);
+
+
 
     const deleteCurrentNote = () => {
         setNotes(oldNotes => {
@@ -32,7 +33,7 @@ export const TodoItem = ({note, setNotes, setLeftCounter}) => {
                 oldNotes[mainIndex].text = editedValue;
                 return oldNotes;
             });
-            patchToJSON(note.id, "text", editedValue);
+            mongoPatchOne(note._id, "text", editedValue);
         } else {
             deleteCurrentNote();
         }

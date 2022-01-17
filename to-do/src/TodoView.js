@@ -31,7 +31,6 @@ export function TodoView() {
 
 	useEffect(() => {
 		setAreAnyNotes(notes[0] ? true : false);
-		localStorage.setItem('notes', JSON.stringify(notes));
 	}, [notes, leftCounter])
 
 	useEffect(() => {
@@ -83,17 +82,19 @@ export function TodoView() {
 						<StyledToggleButton onClick={ToggleAllNotes}>
 							<StyledToggleChevron src={ChevronDown} alt="Chevron" />
 						</StyledToggleButton>
-						<AddItem setNotes={setNotes}/>
+						<AddItem 
+							setNotes={setNotes}
+						/>
 					</StyledTopBarWithInput>
 
 					<StyledTransitionGroup>
 						{ displayNotes.map((note) => (
 							<CSSTransition
-								key={note.id}
+								key={note._id}
 								timeout={300}
 								classNames="item"
 							>
-								<TodoItem 
+								<TodoItem
 									note={note}
 									setNotes={setNotes}
 									setLeftCounter={setLeftCounter}

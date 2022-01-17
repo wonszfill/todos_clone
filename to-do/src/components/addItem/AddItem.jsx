@@ -26,13 +26,19 @@ const StyledAddItem = styled.input`
     }
 `
 
-export const AddItem = ({setNotes}) => {
+export const AddItem = ({setNotes, setIsSync}) => {
 
     const addNote = (e) => {
         if (e.target.value !== "") {
             const text = e.target.value;
             const isDone = false;
-            const newNote = {text: text, isDone: isDone, _id: uniqid("note-")}
+            const createdTime = Date.now();
+            const newNote = {
+                text: text, 
+                isDone: isDone,
+                _id: uniqid("note-"),
+                created: createdTime
+            }
             console.log(newNote._id)
             setNotes((oldNotes) => [newNote, ...oldNotes]);
             e.target.value = "";
