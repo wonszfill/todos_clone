@@ -6,14 +6,16 @@ import {
 
   import { TodoView } from "./TodoView";
   import { LoginView } from "./LoginView";
+  import { Navbar } from "./components/Navbar/Navbar";
 
 const App = () => {
   	return (
 		<BrowserRouter>
+		<Navbar />
 		<Routes>
 		<Route index path="/" element={<TodoView />} />
-		<Route index path=":view" element={<TodoView />} />
-		<Route index path="/login" element={<LoginView />} />
+		<Route path=":view" element={<TodoView />} />
+		<Route path="/login" element={<LoginView />} />
 		</Routes>
 	  </BrowserRouter>
 	)

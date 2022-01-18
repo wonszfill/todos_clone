@@ -1,15 +1,15 @@
+import 'dotenv/config'
 import express from "express";
 import cors from 'cors'
+import jwt from "jsonwebtoken";
+import cookieParser from 'cookie-parser';
+import mongoose from "mongoose";
 
+//CONFIG
 const app = express();
-
 const port = 4000;
 
-app.listen(port, function() {
-  console.log("Server is running on Port: " + port);
-});
 
-import mongoose from "mongoose";
 
 app.use(
   cors({
@@ -17,17 +17,60 @@ app.use(
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE"
   })
 )
-app.use(express.json())
+app.use(express.json());
+app.use(cookieParser());
 
+//HELPERS tb extracted
+function generateAccessToken(user) {
+  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '6000s'});
+}
+
+function authenticateToken(req, res, next) {
+  console.log(req.headers.authorization);
+  const authHeader = req.cookies.authorization;
+  const token = authHeader && authHeader.split(' ')[1];
+  if (token == null) return res.sendStatus(401);
+
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+    if (err) return res.sendStatus(403);
+    req.user = user; 
+    next();
+  }) 
+  
+}
+
+//SERVER
+app.listen(port, function() {
+  console.log("Server is running on Port: " + port);
+});
 
 app.post('/login', async (req, res) => {
-  console.log(req.body);
-  res.send()
+  const login = req.body.login;
+  const password = req.body.password;
+
+  const user = { login: login }
+
+  const accessToken = generateAccessToken(user);
+  const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET)
+  res.cookie('authorization', 'Bearer ' + accessToken, { httpOnly: true })
+    .cookie('refreshToken', 'Bearer ' + refreshToken, { httpOnly: true })
+    .status(200)
+    .json({ message: "Logged in" })
 })
 
+app.get('/logout', async (req, res) => {
+  console.log(req.cookies);
+  res.cookie('authorization', 'none', {
+    expires: new Date(Date.now() + 5 * 1000),
+    httpOnly: true,
+})
+res
+    .status(200)
+    .json({ success: true, message: 'User logged out successfully' })
+})
 
-
-var uri = "mongodb://localhost:27017/todo";
+//DB CONNECTION PAGES
+const uri = "mongodb://localhost:27017/todo";
 
 async function main() {
   await mongoose.connect(uri, { useUnifiedTopology: true, useNewUrlParser: true });
@@ -45,7 +88,8 @@ async function main() {
   const Note = mongoose.model('Note', noteSchema);
 
 
-  app.get('/notes', async (req, res) => {
+  app.get('/notes', authenticateToken, async (req, res) => {
+
     const notes = await Note.find();
     notes.sort((a,b) => {
       return b.created - a.created;
@@ -54,8 +98,6 @@ async function main() {
   })
 
   app.post('/notes', async (req, res) => {
-
-    console.log(req.body)
 
     const id = req.body._id;
     const text = req.body.text;
@@ -74,8 +116,6 @@ async function main() {
   })
 
   app.delete('/notes', async (req, res) => {
-
-    console.log("body: ", req.body)
 
     const idList = req.body;
 

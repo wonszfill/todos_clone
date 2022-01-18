@@ -1,11 +1,11 @@
 export const mongoGetAllNotes = () => {
-    return fetch('http://localhost:4000/notes')
+    return fetch('/notes')
 			.then(res => res.json())
 }
 
 export const mongoMultipleDelete = (idList) => {
     console.log(idList);
-    return fetch(`http://localhost:4000/notes`, {
+    return fetch(`/notes`, {
         method: "DELETE",
         headers: {
             "Content-type": "application/json",
@@ -16,7 +16,7 @@ export const mongoMultipleDelete = (idList) => {
 }
     
 export const mongoPostNewNote = (note) => {
-    return fetch('http://localhost:4000/notes', {
+    return fetch('/notes', {
         method: "POST",
         headers: {
             "Content-type": "application/json",
@@ -27,7 +27,7 @@ export const mongoPostNewNote = (note) => {
 
 export const mongoMultipleToggleDone = (newIsDone) => {
     console.log(newIsDone);
-    return fetch(`http://localhost:4000/notes/setdone`, {
+    return fetch(`/notes/setdone`, {
         method: "PATCH",
         headers: {
             "Content-type": "application/json",
@@ -40,7 +40,7 @@ export const mongoMultipleToggleDone = (newIsDone) => {
     
 export const mongoPatchOne = (id, key, val) => {
     console.log(id, key, val);
-    return fetch(`http://localhost:4000/notes`, {
+    return fetch(`/notes`, {
         method: "PATCH",
         headers: {
             "Content-type": "application/json",
@@ -54,11 +54,15 @@ export const mongoPatchOne = (id, key, val) => {
 }
 
 export const mongoLogin = (data) => {
-    return fetch('http://localhost:4000/login', {
+    return fetch('/login', {
         method: "POST",
         headers: {
             "Content-type": "application/json",
         },
         body: JSON.stringify(data)
     })
+}
+
+export const mongoLogout = () => {
+    return fetch('/logout')
 }
