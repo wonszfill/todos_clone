@@ -12,7 +12,7 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group'
 import { getFromJSON, patchToJSON, deleteFromJSON } from './helpers/contactJSON';
 import { mongoMultipleDelete, mongoGetAllNotes, mongoMultipleToggleDone } from './helpers/contactMongo';
 
-export function TodoView() {
+export function TodoView(loggedIn) {
 
   	const [notes, setNotes] = useState([]);
 	const [leftCounter, setLeftCounter] = useState(0);
@@ -27,7 +27,11 @@ export function TodoView() {
 			.then(data => setNotes(data));
 			setIsSync(true);
 		}
-	})
+	}, [loggedIn])
+
+	if (!loggedIn) {
+		setNotes([]);
+	}
 
 	useEffect(() => {
 		setAreAnyNotes(notes[0] ? true : false);
@@ -115,7 +119,7 @@ export function TodoView() {
 								{notes.length - leftCounter} items left
 							</div>
 							<div>
-								<StyledNavLink to="/notes">All</StyledNavLink> 
+								<StyledNavLink to="/notes/">All</StyledNavLink> 
 								<StyledNavLink to="/notes/active">Active</StyledNavLink> 
 								<StyledNavLink to="/notes/completed">Completed</StyledNavLink>
 							</div>

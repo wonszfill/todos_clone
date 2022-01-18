@@ -4,11 +4,11 @@ import cors from 'cors'
 import jwt from "jsonwebtoken";
 import cookieParser from 'cookie-parser';
 import mongoose from "mongoose";
+import bcrypt from 'bcrypt'
 
 //CONFIG
 const app = express();
 const port = 4000;
-
 
 
 app.use(
@@ -39,35 +39,10 @@ function authenticateToken(req, res, next) {
   
 }
 
+
+
+
 //SERVER
-app.listen(port, function() {
-  console.log("Server is running on Port: " + port);
-});
-
-app.post('/login', async (req, res) => {
-  const login = req.body.login;
-  const password = req.body.password;
-
-  const user = { login: login }
-
-  const accessToken = generateAccessToken(user);
-  const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET)
-  res.cookie('authorization', 'Bearer ' + accessToken, { httpOnly: true })
-    .cookie('refreshToken', 'Bearer ' + refreshToken, { httpOnly: true })
-    .status(200)
-    .json({ message: "Logged in" })
-})
-
-app.get('/logout', async (req, res) => {
-  console.log(req.cookies);
-  res.cookie('authorization', 'none', {
-    expires: new Date(Date.now() + 5 * 1000),
-    httpOnly: true,
-})
-res
-    .status(200)
-    .json({ success: true, message: 'User logged out successfully' })
-})
 
 //DB CONNECTION PAGES
 const uri = "mongodb://localhost:27017/todo";
@@ -78,16 +53,110 @@ async function main() {
   connection.once("open", function() {
     console.log("MongoDB database connection established successfully");
   });
+
   const noteSchema = new mongoose.Schema({
     text: String,
     _id: String,
     isDone: Boolean,
-    created: Number
+    created: Number,
+    author: String
   });
-    
   const Note = mongoose.model('Note', noteSchema);
 
+  const userSchema = new mongoose.Schema({
+    login: {
+      type: String,
+      required: true,
+      unique: true
+    },
+    password: {
+      type: String,
+      required: true
+    },
+    isAdmin: {
+      type: Boolean,
+      default: false
+    }
+  });    
+  const User = mongoose.model('User', userSchema);
 
+  app.listen(port, function() {
+    console.log("Server is running on Port: " + port);
+  });
+  
+
+  // ===REGISTER AND LOGIN===
+  app.post('/register', async (req, res) => {
+    const login = req.body.login;
+    const password = req.body.password;
+    
+    if (!login || !password) {
+      res.status(400).send(`gdzie login/haslo`);
+      return
+    }
+
+    try {
+      const hash = bcrypt.hashSync(password, 10);
+
+      const newUser = new User({
+        login: login,
+        password: hash,
+        isAdmin: false
+        })
+      await newUser.save();
+      console.log("DONE")
+      res.status(200).send(`Created user ${login}`)
+    } catch(e) {
+      console.log("fuckup");
+        res.status(418).send(`fuckup`);
+    }
+  })
+
+  app.post('/login', async (req, res) => {
+    const login = req.body.login;
+    const password = req.body.password;
+  
+    if (!login || !password) {
+      res.status(400).send(`gdzie login/haslo`);
+      return
+    }
+
+    const dbUser = await User.findOne({ login: login });
+    const hash = dbUser.password;
+
+    const match = bcrypt.compareSync(password, hash);
+    if (!match) {
+      res.status(403).send("Invalid password");
+      return
+    };
+    
+    const user = { login: login }
+  
+    const accessToken = generateAccessToken(user);
+    const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET)
+    res.cookie('authorization', 'Bearer ' + accessToken, { httpOnly: true })
+      .cookie('refreshToken', 'Bearer ' + refreshToken, { httpOnly: true })
+      .status(200)
+      .json({ message: "Logged in" })
+  })
+  
+  app.get('/checklogin', authenticateToken, async (req, res) => {
+      res.status(200);
+  })
+  
+  app.get('/logout', async (req, res) => {
+    console.log(req.cookies);
+    res.cookie('authorization', 'none', {
+      expires: new Date(Date.now()),
+      httpOnly: true,
+  })
+  res
+      .status(200)
+      .json({ success: true, message: 'User logged out successfully' })
+  })
+
+
+  // ===DATA ACCESS===
   app.get('/notes', authenticateToken, async (req, res) => {
 
     const notes = await Note.find();

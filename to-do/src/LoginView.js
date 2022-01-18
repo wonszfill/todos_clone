@@ -1,27 +1,15 @@
 import styled from "styled-components";
 import { useState } from "react";
 import { mongoLogin } from "./helpers/contactMongo";
+import { Navigate } from "react-router";
+import { PALLETE } from "./colors/PALLETE";
+import { StyledButton, StyledLoginWrapper, StyledForm, StyledFormRow, StyledFormTitle, StyledTextInput } from "./components/StyledLoginRegister/LoginRegister";
 
-const StyledLoginWrapper = styled.div`
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-`
-
-const StyledForm = styled.form`
-    display: flex;
-    flex-direction: column;
-    padding: 2rem;
-    margin-top: 2rem;
-    max-width: 30rem;
-`
-
-export const LoginView = () => {
+export const LoginView = ({loggedIn, setLoggedIn}) => {
 
     const [login, setLogin] = useState("");
     const [password, setPassword] = useState("");
+
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -32,24 +20,36 @@ export const LoginView = () => {
         mongoLogin({
             login: login, 
             password: password
-            });
-        
+            })
+        .then(res => {
+            if (res.status === 200){
+                setLoggedIn(true)
+            }
+        })
     }
 
     return ( 
     <StyledLoginWrapper>
-        <h1>LOGIN</h1>
-        <StyledForm onSubmit={e => handleSubmit(e)}>        
-        <label>
-          Login:
-          <input type="text" value={login} onChange={(e)=>setLogin(e.target.value)} />        
-        </label>
-        <label>
-          Hasło:
-          <input type="password" value={password} onChange={(e)=>setPassword(e.target.value)} />        
-        </label>
-        <input type="submit" value="Wyślij" />
-      </StyledForm>
+        { loggedIn && <Navigate replace to="/notes" /> }
+        
+        <StyledForm onSubmit={e => handleSubmit(e)}>
+            <StyledFormTitle>LOGIN</StyledFormTitle>
+                <StyledFormRow>
+                    <label>
+                    Login:
+                    <StyledTextInput type="text" value={login} onChange={(e)=>setLogin(e.target.value)} />        
+                    </label>
+                </StyledFormRow>
+                <StyledFormRow>
+                    <label>
+                    Hasło:
+                    <StyledTextInput type="password" value={password} onChange={(e)=>setPassword(e.target.value)} />        
+                    </label>
+                </StyledFormRow>  
+                <StyledFormRow>
+                    <StyledButton type="submit" >Wyślij</StyledButton>
+                </StyledFormRow>                   
+        </StyledForm>
     </StyledLoginWrapper> 
     );
 }

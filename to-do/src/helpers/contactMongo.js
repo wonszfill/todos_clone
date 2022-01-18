@@ -63,6 +63,20 @@ export const mongoLogin = (data) => {
     })
 }
 
+export const mongoRegister = (data) => {
+    return fetch('/register', {
+        method: "POST",
+        headers: {
+            "Content-type": "application/json",
+        },
+        body: JSON.stringify(data)
+    })
+}
+
 export const mongoLogout = () => {
     return fetch('/logout')
+}
+
+export const mongoCheckLogin = () => {
+    return fetch('/checklogin')
 }
