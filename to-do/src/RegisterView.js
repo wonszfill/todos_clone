@@ -2,7 +2,12 @@ import { useState, useContext } from "react";
 import { mongoRegister } from "./helpers/contactMongo";
 import { StyledButton, StyledLoginWrapper, StyledForm, StyledFormRow, StyledFormTitle, StyledTextInput } from "./components/StyledLoginRegister/LoginRegister";
 import { Navigate } from "react-router";
-import { LoginContext } from "./App";
+import { LoginContext, ThemeContext } from "./App";
+
+
+
+
+
 export const RegisterView = () => {
 
     const [login, setLogin] = useState("");

@@ -6,11 +6,11 @@ import { TodoItem } from './components/todoItem/todoItem';
 import { AddItem } from './components/addItem/AddItem';
 import { useParams } from 'react-router';
 import { NavLink } from 'react-router-dom';
-import {PALLETE} from './colors/PALLETE'
+import { DARK_PALLETE, PALLETE} from './colors/PALLETE'
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
 
 import { mongoMultipleDelete, mongoGetAllNotes, mongoMultipleToggleDone } from './helpers/contactMongo';
-import { LoginContext } from './App';
+import { LoginContext, ThemeContext } from './App';
 
 export function TodoView() {
 
@@ -22,6 +22,7 @@ export function TodoView() {
 	const [isSync, setIsSync] = useState(false);
 
 	const loginContext = useContext(LoginContext);
+	const themeContext = useContext(ThemeContext);
 
 	useEffect(() => {
 		if (!isSync) {
@@ -88,7 +89,7 @@ export function TodoView() {
 			<StyledApp>
 				<StyledAppWraper>
 					<StyledAppTitle>todos</StyledAppTitle>
-					<StyledTodosWrapper>
+					<StyledTodosWrapper theme={themeContext}>
 						<StyledTopBarWithInput>
 							<StyledToggleButton onClick={ToggleAllNotes}>
 								<StyledToggleChevron src={ChevronDown} alt="Chevron" />
@@ -121,7 +122,7 @@ export function TodoView() {
 										classNames="summary"
 										unmountOnExit
 						>
-							<StyledSummary>
+							<StyledSummary theme={themeContext}>
 								<div>
 									{notes.length - leftCounter} items left
 								</div>
@@ -202,7 +203,8 @@ const StyledTodosWrapper = styled.div`
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	background: white;
+	color: ${props => props.theme.darkTheme ? DARK_PALLETE.textFont : "inherit"};
+	background: ${props => props.theme.darkTheme ? DARK_PALLETE.lightBg : PALLETE.lightBg};
 	box-shadow: 0 0px 4px 1px ${PALLETE.shadowBlack}, 0 25px 50px 0 rgba(0, 0, 0, 0.1);
 	z-index: 5;
 `
@@ -212,7 +214,7 @@ const StyledSummary = styled.div`
 	display: flex;
 	justify-content: space-between;
 	padding: 0;
-	background: white;
+	background: transparent;
 	border-top: 1px solid ${PALLETE.borderGray};
 	width: 100%;
 	box-sizing: border-box;
@@ -225,7 +227,7 @@ const StyledSummary = styled.div`
 		left:1.2%;
 		width: 97.6%;
 		height: 0.62rem;
-		background: rgba(256, 256, 256, 0.5);
+		background: ${props => props.theme.darkTheme ?" rgba(128, 128, 128, 0.3);" :" rgba(256, 256, 256, 0.5);"};
 		box-shadow: 0 2px 4px 0 ${PALLETE.shadowBlack};
 		z-index: 1;
 	};
@@ -236,7 +238,7 @@ const StyledSummary = styled.div`
 		left: .5%;
 		width: 99%;
 		height: 0.31rem;
-		background: white;
+		background: ${props => props.theme.darkTheme ?" rgba(128, 128, 128, 0.3);" :" rgba(256, 256, 256, 1);"};
 		box-shadow: 0 2px 4px 0 ${PALLETE.shadowBlack}, inset 0px 1px 1px 1px ${PALLETE.shadowBlack};
 		z-index: 2;
 	}

@@ -11,13 +11,13 @@ export const StyledButton = styled.button`
     text-transform: uppercase;
     transition: background-color 0.5s, color 0.5s;
     font-weight: 700;
-    background: #fff;
+    background: transparent;
     cursor: pointer;
     font-family: inherit;
     font-size: 1.4rem;
     line-height: normal;
     &:hover{
-        background: #ddd;
+        background: rgba(128, 128, 128, 0.3);
         color: white;
     }
 `
@@ -51,6 +51,7 @@ export const StyledTextInput = styled.input`
     border-bottom: 1px solid ${PALLETE.borderGray};
     padding: 1rem;
     margin-left:1rem;
+    background: rgba(256, 256, 256, 0.7);
     &:focus{
         outline: none;
         box-shadow: inset 0 0 0 2px ${PALLETE.titleRedish}

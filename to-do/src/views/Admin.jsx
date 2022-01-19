@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
 import { mongoGetAllUsers } from "../helpers/contactMongo";
-import { PALLETE } from "../colors/PALLETE";
+import { PALLETE, DARK_PALLETE } from "../colors/PALLETE";
 import { Navigate } from "react-router";
 import { LoginContext } from "../App";
 

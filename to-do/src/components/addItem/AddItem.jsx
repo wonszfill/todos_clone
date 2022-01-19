@@ -10,9 +10,10 @@ const StyledAddItem = styled.input`
     width: 100%;
     margin: 0;
     text-align: left;
-    background: white;
+    background: transparent;
     font-weight: inherit;
     font-family: inherit;
+    color: inherit;
     &:active{
         border: none;
     }

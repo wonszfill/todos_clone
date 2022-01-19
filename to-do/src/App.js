@@ -11,22 +11,29 @@ import { Navbar } from "./components/Navbar/Navbar";
 import { useEffect, useState } from "react";
 import { mongoCheckLogin } from "./helpers/contactMongo";
 import { RegisterView } from "./RegisterView";
-import styled from "styled-components";
+import styled, { ThemeConsumer } from "styled-components";
 import { Admin } from "./views/Admin";
 import { Footer } from "./components/Footer/Footer";
 
 export const LoginContext = React.createContext(undefined);
+export const ThemeContext = React.createContext(undefined);
 
 const App = () => {
 
 	const [loggedIn, setLoggedIn] = useState(false);
 	const [isAdmin, setIsAdmin] = useState(false)
+	const [darkTheme, setDarkTheme] = useState(false)
 
 	const LogContext = {
 		loggedIn,
 		setLoggedIn,
 		isAdmin,
 		setIsAdmin
+	}
+
+	const DarkThemeContext = {
+		darkTheme,
+		setDarkTheme
 	}
 
  	useEffect(() => {
@@ -60,11 +67,14 @@ const App = () => {
 		display: grid;
 		grid-template-rows: auto 1fr auto;
 		overflow: hidden;
+		background: ${props => props.darkTheme ? "black" :"#f5f5f5"};
+		transition: background-color 1s;
 	`
 
   	return (
+		<ThemeContext.Provider value={DarkThemeContext}>
 		<LoginContext.Provider value={LogContext}>
-			<StyledPageWrapper>
+			<StyledPageWrapper darkTheme={darkTheme}>
 				<BrowserRouter>
 					<Navbar />
 					<Routes>
@@ -78,6 +88,7 @@ const App = () => {
 				</BrowserRouter>
 			</StyledPageWrapper>
 		</LoginContext.Provider>
+		</ThemeContext.Provider>
 	)
 }
 
