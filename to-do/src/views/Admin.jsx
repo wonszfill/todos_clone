@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
 import { mongoGetAllUsers } from "../helpers/contactMongo";
 import { PALLETE } from "../colors/PALLETE";
 import { Navigate } from "react-router";
+import { LoginContext } from "../App";
 
-export const Admin = ({loggedIn, isAdmin}) => {
+export const Admin = () => {
 
     const [users, setUsers] = useState([]);
     const [outOfSync, setOutOfSync] = useState(true);
@@ -15,13 +16,13 @@ export const Admin = ({loggedIn, isAdmin}) => {
         .then(() => setOutOfSync(false))
     }, [outOfSync])
 
-    console.log(users)
+    const loginContext = useContext(LoginContext);
 
-    
+    const isAllowedAccess = loginContext.loggedIn && loginContext.isAdmin;
 
     return ( 
         <StyledPanelWrapper>
-            { !loggedIn || !isAdmin && <Navigate replace to="/notes/" /> }
+            { !isAllowedAccess && <Navigate replace to="/notes/" /> }
           
             {users && users.map((user) => (
                 <StyledUserWrapper key={user.login}>
@@ -67,6 +68,7 @@ const StyledUserWrapper = styled.div`
     overflow: hidden;
     justify-content: space-between;
     max-width: 500px;
+    font-size: 1.2rem;
     &:hover{
         background: #eee;
     }

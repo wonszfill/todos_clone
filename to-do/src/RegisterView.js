@@ -1,14 +1,14 @@
-import styled from "styled-components";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { mongoRegister } from "./helpers/contactMongo";
 import { StyledButton, StyledLoginWrapper, StyledForm, StyledFormRow, StyledFormTitle, StyledTextInput } from "./components/StyledLoginRegister/LoginRegister";
 import { Navigate } from "react-router";
-
-export const RegisterView = ({loggedIn}) => {
+import { LoginContext } from "./App";
+export const RegisterView = () => {
 
     const [login, setLogin] = useState("");
     const [password, setPassword] = useState(false);
 
+    const loginContext = useContext(LoginContext);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -21,7 +21,7 @@ export const RegisterView = ({loggedIn}) => {
 
     return ( 
       <StyledLoginWrapper>
-          { loggedIn && <Navigate replace to="/notes/" /> }
+          { loginContext.loggedIn && <Navigate replace to="/notes/" /> }
           
           <StyledForm onSubmit={e => handleSubmit(e)}>
               <StyledFormTitle>REGISTER</StyledFormTitle>

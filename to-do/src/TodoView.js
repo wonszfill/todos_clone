@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import ChevronDown from './icons/Chevron.png'
 
@@ -10,8 +10,9 @@ import {PALLETE} from './colors/PALLETE'
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
 
 import { mongoMultipleDelete, mongoGetAllNotes, mongoMultipleToggleDone } from './helpers/contactMongo';
+import { LoginContext } from './App';
 
-export function TodoView(loggedIn) {
+export function TodoView() {
 
   	const [notes, setNotes] = useState([]);
 	const [leftCounter, setLeftCounter] = useState(0);
@@ -20,17 +21,19 @@ export function TodoView(loggedIn) {
 	const [isDoneRemovalVisible, setIsDoneRemovalVisible] = useState(false);
 	const [isSync, setIsSync] = useState(false);
 
+	const loginContext = useContext(LoginContext);
+
 	useEffect(() => {
 		if (!isSync) {
 			mongoGetAllNotes()
 			.then(data => setNotes(data));
 			setIsSync(true);
-		}
-	}, [loggedIn])
 
-	if (!loggedIn) {
-		setNotes([]);
-	}
+		}
+		if (!loginContext.loggedIn) {
+			setNotes([]);
+		}
+	}, [loginContext.loggedIn])
 
 	useEffect(() => {
 		setAreAnyNotes(notes[0] ? true : false);
@@ -82,79 +85,79 @@ export function TodoView(loggedIn) {
 		}
 
   	return (
-	  	<StyledApp>
-			<StyledAppWraper>
-				<StyledAppTitle>todos</StyledAppTitle>
-				<StyledTodosWrapper>
-					<StyledTopBarWithInput>
-						<StyledToggleButton onClick={ToggleAllNotes}>
-							<StyledToggleChevron src={ChevronDown} alt="Chevron" />
-						</StyledToggleButton>
-						<AddItem 
-							setNotes={setNotes}
-						/>
-					</StyledTopBarWithInput>
+			<StyledApp>
+				<StyledAppWraper>
+					<StyledAppTitle>todos</StyledAppTitle>
+					<StyledTodosWrapper>
+						<StyledTopBarWithInput>
+							<StyledToggleButton onClick={ToggleAllNotes}>
+								<StyledToggleChevron src={ChevronDown} alt="Chevron" />
+							</StyledToggleButton>
+							<AddItem 
+								setNotes={setNotes}
+							/>
+						</StyledTopBarWithInput>
 
-					<StyledTransitionGroup>
-						{ displayNotes.map((note) => (
-							<CSSTransition
-								key={note._id}
-								timeout={300}
-								classNames="item"
-							>
-								<TodoItem
-									note={note}
-									setNotes={setNotes}
-									setLeftCounter={setLeftCounter}
-								/>
-							</CSSTransition>
-						))}
-					</StyledTransitionGroup>
+						<StyledTransitionGroup>
+							{ displayNotes.map((note) => (
+								<CSSTransition
+									key={note._id}
+									timeout={300}
+									classNames="item"
+								>
+									<TodoItem
+										note={note}
+										setNotes={setNotes}
+										setLeftCounter={setLeftCounter}
+									/>
+								</CSSTransition>
+							))}
+						</StyledTransitionGroup>
 
-					<CSSTransition
-									in={areAnyNotes}
-									key={"summary"}
+						<CSSTransition
+										in={areAnyNotes}
+										key={"summary"}
+										timeout={300}
+										classNames="summary"
+										unmountOnExit
+						>
+							<StyledSummary>
+								<div>
+									{notes.length - leftCounter} items left
+								</div>
+								<div>
+									<StyledNavLink to="/notes/">All</StyledNavLink> 
+									<StyledNavLink to="/notes/active">Active</StyledNavLink> 
+									<StyledNavLink to="/notes/completed">Completed</StyledNavLink>
+								</div>
+								<CSSTransition
+									in={isDoneRemovalVisible}
+									key={"removeDone"}
 									timeout={300}
 									classNames="summary"
-									unmountOnExit
-					>
-						<StyledSummary>
-							<div>
-								{notes.length - leftCounter} items left
-							</div>
-							<div>
-								<StyledNavLink to="/notes/">All</StyledNavLink> 
-								<StyledNavLink to="/notes/active">Active</StyledNavLink> 
-								<StyledNavLink to="/notes/completed">Completed</StyledNavLink>
-							</div>
-							<CSSTransition
-								in={isDoneRemovalVisible}
-								key={"removeDone"}
-								timeout={300}
-								classNames="summary"
-							>
-								<StyledRemoval 
-									onClick={ClearCompleted} 
-									isVisible={isDoneRemovalVisible}
 								>
-									Clear completed
-								</StyledRemoval>
-							</CSSTransition>
-						</StyledSummary>
-					</CSSTransition>
-				</StyledTodosWrapper>
-				<StyledFooter>
-				<p>Double-click to edit a todo</p>
-				<p>
-				Created by Oscar Godson
-				</p><p>
-				Refactored by Christoph Burgmer
-				</p><p>
-				Recreated by Przemek Wojszwiłło
-				</p>
-				</StyledFooter>
-			</StyledAppWraper>
-		</StyledApp>
+									<StyledRemoval 
+										onClick={ClearCompleted} 
+										isVisible={isDoneRemovalVisible}
+									>
+										Clear completed
+									</StyledRemoval>
+								</CSSTransition>
+							</StyledSummary>
+						</CSSTransition>
+					</StyledTodosWrapper>
+					<StyledFooter>
+					<p>Double-click to edit a todo</p>
+					<p>
+					Created by Oscar Godson
+					</p><p>
+					Refactored by Christoph Burgmer
+					</p><p>
+					Recreated by Przemek Wojszwiłło
+					</p>
+					</StyledFooter>
+				</StyledAppWraper>
+			</StyledApp>
 	)
 }
 

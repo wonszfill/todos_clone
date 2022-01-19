@@ -42,7 +42,7 @@ export const AddItem = ({setNotes, setIsSync}) => {
             console.log(newNote._id)
             mongoPostNewNote(newNote)
             .then(res => {
-                if (res.status != 200) {
+                if (res.status !== 200) {
                     return
                 }
                 setNotes((oldNotes) => [newNote, ...oldNotes]);

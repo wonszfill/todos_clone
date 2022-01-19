@@ -3,20 +3,31 @@ import {
 	Routes,
 	Route
   } from "react-router-dom";
+import React from "react";
 
-	import { TodoView } from "./TodoView";
-	import { LoginView } from "./LoginView";
-	import { Navbar } from "./components/Navbar/Navbar";
-	import { useEffect, useState } from "react";
-	import { mongoCheckLogin } from "./helpers/contactMongo";
-	import { RegisterView } from "./RegisterView";
-	import styled from "styled-components";
-	import { Admin } from "./views/Admin";
+import { TodoView } from "./TodoView";
+import { LoginView } from "./LoginView";
+import { Navbar } from "./components/Navbar/Navbar";
+import { useEffect, useState } from "react";
+import { mongoCheckLogin } from "./helpers/contactMongo";
+import { RegisterView } from "./RegisterView";
+import styled from "styled-components";
+import { Admin } from "./views/Admin";
+import { Footer } from "./components/Footer/Footer";
+
+export const LoginContext = React.createContext(undefined);
 
 const App = () => {
 
 	const [loggedIn, setLoggedIn] = useState(false);
 	const [isAdmin, setIsAdmin] = useState(false)
+
+	const LogContext = {
+		loggedIn,
+		setLoggedIn,
+		isAdmin,
+		setIsAdmin
+	}
 
  	useEffect(() => {
 		mongoCheckLogin()
@@ -45,30 +56,28 @@ const App = () => {
 
 
 	const StyledPageWrapper = styled.div`
-		min-height: 99vh;
+		min-height: 100vh;
 		display: grid;
 		grid-template-rows: auto 1fr auto;
+		overflow: hidden;
 	`
 
   	return (
-		<StyledPageWrapper>
-			<BrowserRouter>
-				<Navbar 
-					loggedIn={loggedIn} 
-					setLoggedIn={setLoggedIn} 
-					setIsAdmin={setIsAdmin} 
-					isAdmin={isAdmin} 
-				/>
-				<Routes>
-					<Route index path="/notes/" element={<TodoView loggedIn={loggedIn}/>} />
-					<Route path="/notes/:view" element={<TodoView loggedIn={loggedIn}/>} />
-					<Route path="/login" element={<LoginView loggedIn={loggedIn} setIsAdmin={setIsAdmin}  setLoggedIn={setLoggedIn} />} />
-					<Route path="/register" element={<RegisterView loggedIn={loggedIn}/>} />
-					<Route path="/admin" element={<Admin loggedIn={loggedIn} isAdmin={isAdmin} />} />
-				</Routes>
-				<div>footer</div>
-			</BrowserRouter>
-		</StyledPageWrapper>
+		<LoginContext.Provider value={LogContext}>
+			<StyledPageWrapper>
+				<BrowserRouter>
+					<Navbar />
+					<Routes>
+						<Route index path="/notes/" element={<TodoView/>} />
+						<Route path="/notes/:view" element={<TodoView/>} />
+						<Route path="/login" element={<LoginView/>} />
+						<Route path="/register" element={<RegisterView/>} />
+						<Route path="/admin" element={<Admin/>} />
+					</Routes>
+					<Footer/>
+				</BrowserRouter>
+			</StyledPageWrapper>
+		</LoginContext.Provider>
 	)
 }
 

@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { mongoLogout } from "../../helpers/contactMongo";
 import { PALLETE } from "../../colors/PALLETE";
 import { StyledButton } from "../StyledLoginRegister/LoginRegister";
+import { LoginContext } from "../../App";
 
 const StyledNavbar = styled.div`
     display: flex;
@@ -40,29 +41,43 @@ const StyledSpacer = styled.div`
     flex-grow: 1;
 `
 
-export const Navbar = ({loggedIn, setLoggedIn, isAdmin}) => {
+export const Navbar = () => {
 
-    const handleLogout = () => {
+    const handleLogout = (setLoggedIn) => {
         mongoLogout();
         setLoggedIn(false);
     }
 
-    return ( 
-    <StyledNavbar>
-        <StyledNavLink to='/notes/'> notes </StyledNavLink>
-        <StyledSpacer />
-        { !loggedIn && <StyledNavLink to="/login"> login </StyledNavLink>
+    return (
+        <LoginContext.Consumer>
+        {value => (
+            <StyledNavbar>
+                <StyledNavLink to='/notes/'>
+                    notes 
+                </StyledNavLink>
+                <StyledSpacer />
+                {!value.loggedIn && <StyledNavLink to="/login">
+                    login
+                </StyledNavLink>}
+                
+                
+                {value.loggedIn && <StyledButton 
+                    to="/notes/" 
+                    onClick={() => handleLogout(value.setLoggedIn)}>
+                    logout
+                </StyledButton>}
+            
+                {!value.loggedIn && <StyledNavLink to='/register'>
+                    register
+                </StyledNavLink>}
+                
+                {value.isAdmin && <StyledNavLink to='/admin'> 
+                    admin 
+                </StyledNavLink>}
+                
+            </StyledNavbar>
+            )
         }
-        
-        { loggedIn && <StyledButton to="/notes/" onClick={handleLogout}>
-            logout
-        </StyledButton>
-        }
-        { !loggedIn && <StyledNavLink to='/register'> register </StyledNavLink>
-        }
-        { isAdmin && <StyledNavLink to='/admin'> admin </StyledNavLink>
-        }
-             
-    </StyledNavbar>
+        </LoginContext.Consumer>           
     );
 }

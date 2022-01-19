@@ -1,32 +1,29 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { mongoLogin } from "./helpers/contactMongo";
 import { Navigate } from "react-router";
-import { PALLETE } from "./colors/PALLETE";
+import { LoginContext } from "./App";
 import { StyledButton, StyledLoginWrapper, StyledForm, StyledFormRow, StyledFormTitle, StyledTextInput } from "./components/StyledLoginRegister/LoginRegister";
 
-export const LoginView = ({loggedIn, setLoggedIn, setIsAdmin}) => {
+export const LoginView = () => {
 
     const [login, setLogin] = useState("");
     const [password, setPassword] = useState("");
 
+    const loginContext = useContext(LoginContext);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log({
-            login: login, 
-            password: password
-            });
         mongoLogin({
             login: login, 
             password: password
             })
         .then(res => {
             if (res.status === 200){
-                setLoggedIn(true);
+                loginContext.setLoggedIn(true);
                 const data = res.json();
                 if (data.isAdmin) {
-                    setIsAdmin(true)
+                    loginContext.setIsAdmin(true)
                 }
             }
         })
@@ -34,7 +31,7 @@ export const LoginView = ({loggedIn, setLoggedIn, setIsAdmin}) => {
 
     return ( 
     <StyledLoginWrapper>
-        { loggedIn && <Navigate replace to="/notes/" /> }
+        { loginContext.loggedIn && <Navigate replace to="/notes/" /> }
         
         <StyledForm onSubmit={e => handleSubmit(e)}>
             <StyledFormTitle>LOGIN</StyledFormTitle>
