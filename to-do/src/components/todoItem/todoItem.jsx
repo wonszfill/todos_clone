@@ -94,11 +94,11 @@ export const TodoItem = ({note, setNotes, setLeftCounter}) => {
 
 const StyledRemoveButton = styled.img`
     position: absolute;
-    top: 1rem;
-    right: 0.8rem;
-    width:1rem;
-    padding: 0.2rem;
-    margin-right: 0.3rem;
+    top: 2rem;
+    right: 1.6rem;
+    width:2rem;
+    padding: 0.4rem;
+    margin-right: 0.6rem;
     visibility: hidden;
     opacity: 0.3;
     cursor: pointer;
@@ -108,8 +108,8 @@ const StyledRemoveButton = styled.img`
 `
 
 const StyledTodoItem = styled.div`
-    padding-left:0.4rem;
-    font-size: 1.2rem;
+    padding-left:0.8rem;
+    font-size: 2rem;
     border: none;
     width: 100%;
     margin: 0;
@@ -126,10 +126,10 @@ const StyledTodoItem = styled.div`
 `
 
 const StyledCheckbox = styled.input`
-    --radius: 2rem;
+    --radius: 4rem;
     width: var(--radius);
     height: var(--radius);
-    margin: 0.6rem 0.4rem;
+    margin: 1.2rem 0.8rem;
     border-radius: 50%;
     border:1px solid black;
     appearance: none;
@@ -176,7 +176,7 @@ const StyledEditText = styled.input`
     height: 100%;
     font-family: inherit;
     border: 1px solid ${PALLETE.borderGray};
-    padding: 0.8rem 0.4rem;
+    padding: 1.9rem 0.8rem;
     &:focus, &:active{
         box-shadow: inset 0 0 5px 1px ${PALLETE.shadowBlack};
         border:none;

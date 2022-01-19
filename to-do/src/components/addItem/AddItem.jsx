@@ -3,9 +3,9 @@ import styled from "styled-components";
 import { mongoPostNewNote } from '../../helpers/contactMongo';
 
 const StyledAddItem = styled.input`
-    padding: 1rem 0.4rem;
+    padding: 2rem 0.8rem;
     box-sizing: border-box;
-    font-size: 1.2rem;
+    font-size: 2rem;
     border: none;
     width: 100%;
     margin: 0;
@@ -40,9 +40,15 @@ export const AddItem = ({setNotes, setIsSync}) => {
                 created: createdTime
             }
             console.log(newNote._id)
-            setNotes((oldNotes) => [newNote, ...oldNotes]);
+            mongoPostNewNote(newNote)
+            .then(res => {
+                if (res.status != 200) {
+                    return
+                }
+                setNotes((oldNotes) => [newNote, ...oldNotes]);
+            })
             e.target.value = "";
-            mongoPostNewNote(newNote);
+            
         }
     }
 

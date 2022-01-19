@@ -5,7 +5,7 @@ import { Navigate } from "react-router";
 import { PALLETE } from "./colors/PALLETE";
 import { StyledButton, StyledLoginWrapper, StyledForm, StyledFormRow, StyledFormTitle, StyledTextInput } from "./components/StyledLoginRegister/LoginRegister";
 
-export const LoginView = ({loggedIn, setLoggedIn}) => {
+export const LoginView = ({loggedIn, setLoggedIn, setIsAdmin}) => {
 
     const [login, setLogin] = useState("");
     const [password, setPassword] = useState("");
@@ -23,14 +23,18 @@ export const LoginView = ({loggedIn, setLoggedIn}) => {
             })
         .then(res => {
             if (res.status === 200){
-                setLoggedIn(true)
+                setLoggedIn(true);
+                const data = res.json();
+                if (data.isAdmin) {
+                    setIsAdmin(true)
+                }
             }
         })
     }
 
     return ( 
     <StyledLoginWrapper>
-        { loggedIn && <Navigate replace to="/notes" /> }
+        { loggedIn && <Navigate replace to="/notes/" /> }
         
         <StyledForm onSubmit={e => handleSubmit(e)}>
             <StyledFormTitle>LOGIN</StyledFormTitle>

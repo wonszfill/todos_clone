@@ -4,7 +4,7 @@ import { PALLETE } from "../../colors/PALLETE";
 export const StyledButton = styled.button`
     text-decoration: none;
     color: ${PALLETE.menuOptions};
-    padding: 0.5rem 1rem;
+    padding: 1rem;
     margin: 0 2rem;
     border: 1px solid ${PALLETE.borderGray};
     border-radius: 0.5rem;
@@ -13,6 +13,9 @@ export const StyledButton = styled.button`
     font-weight: 700;
     background: #fff;
     cursor: pointer;
+    font-family: inherit;
+    font-size: 1.4rem;
+    line-height: normal;
     &:hover{
         background: #ddd;
         color: white;
@@ -34,18 +37,19 @@ export const StyledForm = styled.form`
 `
 export const StyledFormTitle = styled.h1`
     margin: 1rem;
-    font-size: 1rem;
+    font-size: 1.6rem;
     font-weight: 600;
 `
 
 export const StyledFormRow = styled.div`
-    margin: 0.5rem;
+    margin: 1rem;
+    font-size: 1.2rem;
 `
 
 export const StyledTextInput = styled.input`
     border: none;
     border-bottom: 1px solid ${PALLETE.borderGray};
-    padding: 0.4rem;
+    padding: 1rem;
     margin-left:1rem;
     &:focus{
         outline: none;

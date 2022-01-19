@@ -10,7 +10,6 @@ import bcrypt from 'bcrypt'
 const app = express();
 const port = 4000;
 
-
 app.use(
   cors({
     origin: "http://localhost:3000",
@@ -20,29 +19,23 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
+
 //HELPERS tb extracted
 function generateAccessToken(user) {
   return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '6000s'});
 }
 
 function authenticateToken(req, res, next) {
-  console.log(req.headers.authorization);
   const authHeader = req.cookies.authorization;
   const token = authHeader && authHeader.split(' ')[1];
-  if (token == null) return res.sendStatus(401);
+  if (token == null) return res.status(401).send("Failed to authenticate");
 
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-    if (err) return res.sendStatus(403);
+    if (err) return res.status(403).send("INVALID TOKEN");;
     req.user = user; 
     next();
   }) 
-  
 }
-
-
-
-
-//SERVER
 
 //DB CONNECTION PAGES
 const uri = "mongodb://localhost:27017/todo";
@@ -91,7 +84,7 @@ async function main() {
     const password = req.body.password;
     
     if (!login || !password) {
-      res.status(400).send(`gdzie login/haslo`);
+      res.status(400).send(`Missing login / password`);
       return
     }
 
@@ -104,11 +97,9 @@ async function main() {
         isAdmin: false
         })
       await newUser.save();
-      console.log("DONE")
       res.status(200).send(`Created user ${login}`)
     } catch(e) {
-      console.log("fuckup");
-        res.status(418).send(`fuckup`);
+        res.status(418).send(`Invalid login / password`);
     }
   })
 
@@ -117,35 +108,38 @@ async function main() {
     const password = req.body.password;
   
     if (!login || !password) {
-      res.status(400).send(`gdzie login/haslo`);
+      res.status(400).send(`Missing login / password`);
       return
     }
 
     const dbUser = await User.findOne({ login: login });
     const hash = dbUser.password;
+    const isAdmin = dbUser.isAdmin;
 
     const match = bcrypt.compareSync(password, hash);
     if (!match) {
-      res.status(403).send("Invalid password");
+      res.status(403).send("Invalid login / password");
       return
     };
     
-    const user = { login: login }
+    const user = { login: login, isAdmin: isAdmin }
   
     const accessToken = generateAccessToken(user);
     const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET)
     res.cookie('authorization', 'Bearer ' + accessToken, { httpOnly: true })
       .cookie('refreshToken', 'Bearer ' + refreshToken, { httpOnly: true })
       .status(200)
-      .json({ message: "Logged in" })
+      .json({ message: "Logged in", isAdmin: isAdmin })
   })
   
   app.get('/checklogin', authenticateToken, async (req, res) => {
-      res.status(200);
+      const login = req.user.login;
+      const dbUser = await User.findOne({ login: login });
+      const isAdmin = dbUser.isAdmin;
+      res.status(200).json({ message: "Logged in", isAdmin: isAdmin });
   })
   
   app.get('/logout', async (req, res) => {
-    console.log(req.cookies);
     res.cookie('authorization', 'none', {
       expires: new Date(Date.now()),
       httpOnly: true,
@@ -159,32 +153,36 @@ async function main() {
   // ===DATA ACCESS===
   app.get('/notes', authenticateToken, async (req, res) => {
 
-    const notes = await Note.find();
+    const login = req.user.login;
+
+    const notes = await Note.find({ author: login });
     notes.sort((a,b) => {
       return b.created - a.created;
     })
-    res.json(notes);
+    res.status(200).json(notes);
   })
 
-  app.post('/notes', async (req, res) => {
+  app.post('/notes', authenticateToken, async (req, res) => {
 
     const id = req.body._id;
     const text = req.body.text;
     const isDone = req.body.isDone;
     const created = req.body.created;
+    const login = req.user.login;
 
     const newNote = new Note({
       text: text,
       _id: id,
       isDone: isDone,
-      created: created
+      created: created,
+      author: login
     })
 
     await newNote.save();
     res.json(newNote);
   })
 
-  app.delete('/notes', async (req, res) => {
+  app.delete('/notes', authenticateToken, async (req, res) => {
 
     const idList = req.body;
 
@@ -194,7 +192,7 @@ async function main() {
     res.send("Deleted");
   })
 
-  app.patch('/notes/setdone', async (req, res) => {
+  app.patch('/notes/setdone', authenticateToken, async (req, res) => {
 
     const isDone = req.body.isDone;
     const update = await Note.updateMany({isDone: !isDone}, {isDone: isDone})
@@ -202,9 +200,7 @@ async function main() {
     res.send(`Updated ${update.modifiedCount} notes.`);
   })
 
-  app.patch('/notes', async (req, res) => {
-
-    console.log("body: ", req.body)
+  app.patch('/notes', authenticateToken, async (req, res) => {
 
     const _id = req.body._id;
     const key = req.body.key;
@@ -215,6 +211,26 @@ async function main() {
     const update = await Note.updateOne({_id: _id}, patch)
 
     res.send(`Updated ${update.modifiedCount} note.`);
+  })
+
+  // === ADMIN PANEL ===
+
+  app.get('/users', authenticateToken, async (req, res) => {
+
+    const login = req.user.login;
+    const dbUser = await User.findOne({ login: login });
+    const isAdmin = dbUser.isAdmin;
+
+    if (!isAdmin) {
+      res.status(403).send("Not an admin")
+      return
+    }
+
+    const users = await User.find({});
+    users.sort((a,b) => {
+      return b.isAdmin - a.isAdmin;
+    })
+    res.json(users);
   })
 
 }

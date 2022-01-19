@@ -7,14 +7,11 @@ import { Navigate } from "react-router";
 export const RegisterView = ({loggedIn}) => {
 
     const [login, setLogin] = useState("");
-    const [password, setPassword] = useState("");
+    const [password, setPassword] = useState(false);
+
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log({
-            login: login, 
-            password: password
-            });
         mongoRegister({
             login: login, 
             password: password
@@ -24,7 +21,7 @@ export const RegisterView = ({loggedIn}) => {
 
     return ( 
       <StyledLoginWrapper>
-          { loggedIn && <Navigate replace to="/notes" /> }
+          { loggedIn && <Navigate replace to="/notes/" /> }
           
           <StyledForm onSubmit={e => handleSubmit(e)}>
               <StyledFormTitle>REGISTER</StyledFormTitle>

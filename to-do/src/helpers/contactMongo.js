@@ -80,3 +80,11 @@ export const mongoLogout = () => {
 export const mongoCheckLogin = () => {
     return fetch('/checklogin')
 }
+
+
+// ADMIN
+
+export const mongoGetAllUsers = () => {
+    return fetch('/users')
+			.then(res => res.json())
+}

@@ -9,7 +9,6 @@ import { NavLink } from 'react-router-dom';
 import {PALLETE} from './colors/PALLETE'
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
 
-import { getFromJSON, patchToJSON, deleteFromJSON } from './helpers/contactJSON';
 import { mongoMultipleDelete, mongoGetAllNotes, mongoMultipleToggleDone } from './helpers/contactMongo';
 
 export function TodoView(loggedIn) {
@@ -53,7 +52,12 @@ export function TodoView(loggedIn) {
 	}
 
 	const ToggleAllNotes = () => {
-		mongoMultipleToggleDone(globalIsDone);
+		mongoMultipleToggleDone(globalIsDone)
+		.then(res => {
+			if (res.status != 200) {
+				return
+			}
+		})
 		setNotes(oldNotes => oldNotes.map(oldNote =>{
 			oldNote.isDone = globalIsDone;
 			return oldNote;
@@ -161,11 +165,12 @@ const StyledApp = styled.div`
 
 const StyledAppWraper = styled.div`
 	width: 100%;
-	max-width: 550px;
+	max-width: 55rem;
+	font-size: 1.6rem;
 `
 
 const StyledAppTitle = styled.h1`
-	font-size: 6rem;
+	font-size: 10rem;
 	color: ${PALLETE.titleRedish};
 	margin: 1rem;
 `
@@ -174,18 +179,18 @@ const StyledTopBarWithInput = styled.div`
 	width: 100%;
 	justify-content: flex-start;
 	align-items: center;
-	padding: 0 0.4rem;
+	padding: 0 1rem;
 `
 
 const StyledToggleButton = styled.div`
-	margin: 0.8rem 0.4rem;
-	margin-left: 1.2rem;
-	padding: 0.1rem;
+	margin: 1.6rem 0.8rem;
+	margin-left: 2.4rem;
+	padding: 0.2rem;
 	cursor: pointer;
 `
 
 const StyledToggleChevron = styled.img`
-	width:1rem;
+	width:2rem;
 	opacity: 0.2;
 `
 
@@ -209,7 +214,7 @@ const StyledSummary = styled.div`
 	width: 100%;
 	box-sizing: border-box;
 	box-shadow: 0 5px 4px 0 rgba(0, 0, 0, 0.2);
-	font-size: 0.8rem;
+	
 	&:before{
 		content: "";
 		position: absolute;
@@ -239,7 +244,7 @@ const StyledSummary = styled.div`
 `
 
 const StyledNavLink = styled(NavLink)`
-	padding: 0.2rem 0.5rem;
+	padding: 0.4rem 1rem;
 	text-decoration: none;
 	color: inherit;
 	border-radius: 0.2rem;
@@ -257,8 +262,8 @@ const StyledRemoval = styled.div`
 `
 
 const StyledFooter = styled.div`
-	padding: 1rem;
-	margin-top: 4rem;
+	padding: 2rem;
+	margin-top: 8rem;
 	line-height: 2;
 	color: ${PALLETE.borderGray};
 `
