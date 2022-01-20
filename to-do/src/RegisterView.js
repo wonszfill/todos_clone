@@ -1,6 +1,6 @@
 import { useState, useContext } from "react";
 import { mongoRegister } from "./helpers/contactMongo";
-import { StyledButton, StyledLoginWrapper, StyledForm, StyledFormRow, StyledFormTitle, StyledTextInput } from "./components/StyledLoginRegister/LoginRegister";
+import { StyledLabel, StyledButton, StyledLoginWrapper, StyledForm, StyledFormRow, StyledFormTitle, StyledTextInput } from "./components/StyledLoginRegister/LoginRegister";
 import { Navigate } from "react-router";
 import { LoginContext, ThemeContext } from "./App";
 
@@ -12,10 +12,12 @@ export const RegisterView = () => {
 
     const [login, setLogin] = useState("");
     const [password, setPassword] = useState(false);
+    const [confPassword, setConfPassword] = useState(false);
 
     const loginContext = useContext(LoginContext);
 
     const handleSubmit = (e) => {
+        if (confPassword !== password) {return}
         e.preventDefault();
         mongoRegister({
             login: login, 
@@ -31,17 +33,26 @@ export const RegisterView = () => {
           <StyledForm onSubmit={e => handleSubmit(e)}>
               <StyledFormTitle>REGISTER</StyledFormTitle>
                   <StyledFormRow>
-                      <label>
+                      <StyledLabel>
                       Login:
-                      <StyledTextInput type="text" value={login} onChange={(e)=>setLogin(e.target.value)} />        
-                      </label>
+                      </StyledLabel>
+                      <StyledTextInput name="login" type="text" value={login} required onChange={(e)=>setLogin(e.target.value)} />        
+                      
                   </StyledFormRow>
                   <StyledFormRow>
-                      <label>
+                      <StyledLabel>
                       Hasło:
-                      <StyledTextInput type="password" value={password} onChange={(e)=>setPassword(e.target.value)} />        
-                      </label>
-                  </StyledFormRow>  
+                      </StyledLabel>
+                      <StyledTextInput name="password" type="password" value={password} required onChange={(e)=>setPassword(e.target.value)} />        
+                      
+                  </StyledFormRow>
+                  <StyledFormRow>
+                      <StyledLabel>
+                      Potwierdź hasło:
+                      </StyledLabel>
+                      <StyledTextInput name="confirmed password" type="password" value={confPassword} required onChange={(e)=>setConfPassword(e.target.value)} />        
+                      
+                  </StyledFormRow>    
                   <StyledFormRow>
                       <StyledButton type="submit" >Wyślij</StyledButton>
                   </StyledFormRow>                   

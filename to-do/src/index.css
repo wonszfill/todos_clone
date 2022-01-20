@@ -49,6 +49,20 @@ table {
 
 :root{
   font-size: 10px;
+   /* SCROLLBAR */
+   scrollbar-width: thin;
+   scrollbar-color: grey ;
+}
+
+:root::-webkit-scrollbar {
+  width: 12px;
+  }
+:root::-webkit-scrollbar-track {
+}
+:root::-webkit-scrollbar-thumb {
+  background-color: grey;
+  border-radius: 20px;
+  border: 3px solid white;
 }
 
 body {
@@ -69,6 +83,10 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+
+
+
 
 .item {
   width:100%;
@@ -116,6 +134,29 @@ code {
 .summary-exit-active {
   opacity: 0;
   max-height: 0;
-  transition: max-height 300ms, opacity 300ms; 
-  
+  transition: max-height 300ms, opacity 300ms;  
+}
+
+.notesPreview {
+  width:100%;
+  transform-origin: top center;
+  padding: 0;
+}
+.notesPreview-enter {
+  opacity: 0;
+  max-height: 0;
+}
+.notesPreview-enter-active {
+  max-height: 100rem;
+  opacity: 1;
+  transition: max-height 400ms, opacity 400ms; 
+}
+.notesPreview-exit {
+  max-height: 100rem;
+  opacity: 1;
+}
+.notesPreview-exit-active {
+  opacity: 0;
+  max-height: 0;
+  transition: max-height 500ms, opacity 500ms;  
 }

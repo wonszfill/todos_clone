@@ -1,6 +1,8 @@
 export const mongoGetAllNotes = () => {
     return fetch('/notes')
-			.then(res => res.json())
+			.then(res => {
+                return res.ok ? res.json() : [];
+            })
 }
 
 export const mongoMultipleDelete = (idList) => {
@@ -87,4 +89,23 @@ export const mongoCheckLogin = () => {
 export const mongoGetAllUsers = () => {
     return fetch('/users')
 			.then(res => res.json())
+}
+
+export const mongoSwitchAdmin = (login, newIsAdmin) => {
+    return fetch('/users', {
+        method: "PATCH",
+        headers: {
+            "Content-type": "application/json",
+        },
+        body: JSON.stringify({
+            login: login,
+            newIsAdmin: newIsAdmin
+        })
+    })
+}
+
+export const mongoAdminGetUserNotes = (login) => {
+    return fetch(`/users/${login}`, {
+        method: "GET",
+    })
 }

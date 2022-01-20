@@ -80,9 +80,11 @@ async function main() {
 
   // ===REGISTER AND LOGIN===
   app.post('/register', async (req, res) => {
-    const login = req.body.login;
-    const password = req.body.password;
+    const login = req.body.login || null;
+    const password = req.body.password || null;
     
+    const passwordTemplate = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
+
     if (!login || !password) {
       res.status(400).send(`Missing login / password`);
       return
@@ -104,8 +106,9 @@ async function main() {
   })
 
   app.post('/login', async (req, res) => {
-    const login = req.body.login;
-    const password = req.body.password;
+
+    const login = req.body.login || null;
+    const password = req.body.password || null;
   
     if (!login || !password) {
       res.status(400).send(`Missing login / password`);
@@ -113,6 +116,12 @@ async function main() {
     }
 
     const dbUser = await User.findOne({ login: login });
+
+    if (!dbUser) {
+      res.status(400).send(`Invalid username`);
+      return
+    }
+
     const hash = dbUser.password;
     const isAdmin = dbUser.isAdmin;
 
@@ -129,14 +138,14 @@ async function main() {
     res.cookie('authorization', 'Bearer ' + accessToken, { httpOnly: true })
       .cookie('refreshToken', 'Bearer ' + refreshToken, { httpOnly: true })
       .status(200)
-      .json({ message: "Logged in", isAdmin: isAdmin })
+      .json({ message: "Logged in", isAdmin: isAdmin, login: login })
   })
   
   app.get('/checklogin', authenticateToken, async (req, res) => {
       const login = req.user.login;
       const dbUser = await User.findOne({ login: login });
       const isAdmin = dbUser.isAdmin;
-      res.status(200).json({ message: "Logged in", isAdmin: isAdmin });
+      res.status(200).json({ message: "Logged in", isAdmin: isAdmin, login: login });
   })
   
   app.get('/logout', async (req, res) => {
@@ -231,6 +240,52 @@ async function main() {
       return b.isAdmin - a.isAdmin;
     })
     res.json(users);
+  })
+
+  
+  app.patch('/users', authenticateToken, async (req, res) => {
+
+    const login = req.user.login;
+    const dbUser = await User.findOne({ login: login });
+    const isAdmin = dbUser.isAdmin;
+
+    if (!isAdmin) {
+      res.status(403).send("Not an admin")
+      return
+    }
+
+    const changedUser = req.body.login;
+    const newIsAdmin = req.body.newIsAdmin;
+
+    if (login === changedUser) {
+      res.status(403).send("Cannot revoke admin from self")
+      return
+    }
+
+    const user = await User.findOneAndUpdate({login: changedUser}, {isAdmin: newIsAdmin});
+
+    res.status(200).json({isAdmin: newIsAdmin});
+  })
+
+
+  app.get('/users/:login', authenticateToken, async (req, res) => {
+
+    const login = req.user.login;
+    const dbUser = await User.findOne({ login: login });
+    const isAdmin = dbUser.isAdmin;
+
+    if (!isAdmin) {
+      res.status(403).send("Not an admin")
+      return
+    }
+
+    const gotUser = req.params.login;
+
+    const notes = await Note.find({ author: gotUser });
+    notes.sort((a,b) => {
+      return b.created - a.created;
+    })
+    res.status(200).json(notes);
   })
 
 }

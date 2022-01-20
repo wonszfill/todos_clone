@@ -2,23 +2,40 @@ import styled from "styled-components";
 import { PALLETE } from "../../colors/PALLETE";
 
 export const StyledButton = styled.button`
+    grid-column: 1 / 3;
     text-decoration: none;
     color: ${PALLETE.menuOptions};
-    padding: 1rem;
-    margin: 0 2rem;
-    border: 1px solid ${PALLETE.borderGray};
-    border-radius: 0.5rem;
+    padding: 1rem 4rem;
+    margin: 0 1rem;
     text-transform: uppercase;
     transition: background-color 0.5s, color 0.5s;
     font-weight: 700;
-    background: transparent;
-    cursor: pointer;
+    border-radius: 0.5rem;
     font-family: inherit;
     font-size: 1.4rem;
     line-height: normal;
+    position: relative;
+    background: transparent;
+    border: none;
+    cursor: pointer;
     &:hover{
-        background: rgba(128, 128, 128, 0.3);
-        color: white;
+        background: rgba(128,128,128,0.05)
+    }
+    &:after{
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        background: transparent;
+        border: 1px solid ${PALLETE.borderGray};
+        border-radius: 0.5rem;
+        opacity: 0;
+        transition: opacity 0.4s;
+    }
+    &:hover:after{
+        opacity: 1;
     }
 `
 
@@ -32,8 +49,8 @@ export const StyledLoginWrapper = styled.div`
 export const StyledForm = styled.form`
     display: flex;
     flex-direction: column;
-    padding: 2rem;
     max-width: 30rem;
+    position: relative;
 `
 export const StyledFormTitle = styled.h1`
     margin: 1rem;
@@ -42,8 +59,17 @@ export const StyledFormTitle = styled.h1`
 `
 
 export const StyledFormRow = styled.div`
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     margin: 1rem;
     font-size: 1.2rem;
+`
+
+export const StyledLabel = styled.div`
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    letter-spacing: 1px;
 `
 
 export const StyledTextInput = styled.input`

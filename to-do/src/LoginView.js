@@ -1,19 +1,32 @@
 import styled from "styled-components";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { mongoLogin } from "./helpers/contactMongo";
 import { Navigate } from "react-router";
 import { LoginContext } from "./App";
-import { StyledButton, StyledLoginWrapper, StyledForm, StyledFormRow, StyledFormTitle, StyledTextInput } from "./components/StyledLoginRegister/LoginRegister";
+import { StyledLabel,StyledButton, StyledLoginWrapper, StyledForm, StyledFormRow, StyledFormTitle, StyledTextInput } from "./components/StyledLoginRegister/LoginRegister";
+import { FailedLoginAlert } from "./components/Alerts/FailedLoginAlert";
 
 export const LoginView = () => {
 
     const [login, setLogin] = useState("");
     const [password, setPassword] = useState("");
+    const [isAlertOn, setIsAlertOn] = useState(false);
 
     const loginContext = useContext(LoginContext);
 
+    useEffect(() => {
+        if (!isAlertOn) {
+            return
+        }
+        const timer = setTimeout(() => {
+            setIsAlertOn(false);
+        }, 5000)
+        return () => {clearTimeout(timer)}
+    }, [isAlertOn])
+
     const handleSubmit = (e) => {
         e.preventDefault();
+        console.log(login, password)
         mongoLogin({
             login: login, 
             password: password
@@ -25,6 +38,8 @@ export const LoginView = () => {
                 if (data.isAdmin) {
                     loginContext.setIsAdmin(true)
                 }
+            } else {
+                setIsAlertOn(true)
             }
         })
     }
@@ -36,20 +51,23 @@ export const LoginView = () => {
         <StyledForm onSubmit={e => handleSubmit(e)}>
             <StyledFormTitle>LOGIN</StyledFormTitle>
                 <StyledFormRow>
-                    <label>
-                    Login:
-                    <StyledTextInput type="text" value={login} onChange={(e)=>setLogin(e.target.value)} />        
-                    </label>
+                    <StyledLabel>
+                    Login: 
+                    </StyledLabel>
+                    <StyledTextInput type="text" value={login} required onChange={(e)=>setLogin(e.target.value)} />        
+                   
                 </StyledFormRow>
                 <StyledFormRow>
-                    <label>
+                    <StyledLabel>
                     Hasło:
-                    <StyledTextInput type="password" value={password} onChange={(e)=>setPassword(e.target.value)} />        
-                    </label>
+                    </StyledLabel>
+                    <StyledTextInput type="password" value={password} required onChange={(e)=>setPassword(e.target.value)} />        
+                   
                 </StyledFormRow>  
                 <StyledFormRow>
                     <StyledButton type="submit" >Wyślij</StyledButton>
-                </StyledFormRow>                   
+                </StyledFormRow>
+                <FailedLoginAlert code={1} isOn={isAlertOn} message="Invalid login or password"/>                   
         </StyledForm>
     </StyledLoginWrapper> 
     );
