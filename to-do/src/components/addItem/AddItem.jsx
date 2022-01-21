@@ -2,31 +2,6 @@ import uniqid from 'uniqid';
 import styled from "styled-components";
 import { mongoPostNewNote } from '../../helpers/contactMongo';
 
-const StyledAddItem = styled.input`
-    padding: 2rem 0.8rem;
-    box-sizing: border-box;
-    font-size: 2rem;
-    border: none;
-    width: 100%;
-    margin: 0;
-    text-align: left;
-    background: transparent;
-    font-weight: inherit;
-    font-family: inherit;
-    color: inherit;
-    &:active{
-        border: none;
-    }
-    &:focus{
-        border: none;
-        outline: none;
-    }
-    &::placeholder {
-        font-style: italic;
-        opacity: 0.1;
-    }
-`
-
 export const AddItem = ({setNotes, setIsSync}) => {
 
     const addNote = (e) => {
@@ -40,7 +15,6 @@ export const AddItem = ({setNotes, setIsSync}) => {
                 _id: uniqid("note-"),
                 created: createdTime
             }
-            console.log(newNote._id)
             mongoPostNewNote(newNote)
             .then(res => {
                 if (res.status !== 200) {
@@ -73,3 +47,27 @@ export const AddItem = ({setNotes, setIsSync}) => {
      );
 }
  
+const StyledAddItem = styled.input`
+    padding: 2rem 0.8rem;
+    box-sizing: border-box;
+    font-size: 2rem;
+    border: none;
+    width: 100%;
+    margin: 0;
+    text-align: left;
+    background: transparent;
+    font-weight: inherit;
+    font-family: inherit;
+    color: inherit;
+    &:active{
+        border: none;
+    }
+    &:focus{
+        border: none;
+        outline: none;
+    }
+    &::placeholder {
+        font-style: italic;
+        opacity: 0.1;
+    }
+`

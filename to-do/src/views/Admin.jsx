@@ -48,7 +48,6 @@ export const Admin = () => {
         .then(data => {
             setCurrentPreview(index);
             setPreviewNotes(data);
-            console.log(data[0]);
         })
     }
 

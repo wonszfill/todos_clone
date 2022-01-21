@@ -6,7 +6,6 @@ export const mongoGetAllNotes = () => {
 }
 
 export const mongoMultipleDelete = (idList) => {
-    console.log(idList);
     return fetch(`/notes`, {
         method: "DELETE",
         headers: {
@@ -28,7 +27,6 @@ export const mongoPostNewNote = (note) => {
 }
 
 export const mongoMultipleToggleDone = (newIsDone) => {
-    console.log(newIsDone);
     return fetch(`/notes/setdone`, {
         method: "PATCH",
         headers: {
@@ -41,7 +39,6 @@ export const mongoMultipleToggleDone = (newIsDone) => {
 }
     
 export const mongoPatchOne = (id, key, val) => {
-    console.log(id, key, val);
     return fetch(`/notes`, {
         method: "PATCH",
         headers: {

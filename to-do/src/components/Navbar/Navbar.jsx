@@ -63,6 +63,7 @@ const StyledNavbar = styled.div`
     padding: 0 2rem;
     background: ${props => props.darkTheme ? DARK_PALLETE.lightBg : PALLETE.lightBg };
     box-shadow: 0px 0 5px 0px ${PALLETE.shadowBlack};
+    transition: background-color 0.3s;
 `
 
 const StyledNavLink = styled(NavLink)`

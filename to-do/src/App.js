@@ -11,7 +11,7 @@ import { Navbar } from "./components/Navbar/Navbar";
 import { useEffect, useState } from "react";
 import { mongoCheckLogin } from "./helpers/contactMongo";
 import { RegisterView } from "./RegisterView";
-import styled, { ThemeConsumer } from "styled-components";
+import styled from "styled-components";
 import { Admin } from "./views/Admin";
 import { Footer } from "./components/Footer/Footer";
 
@@ -94,5 +94,5 @@ const StyledPageWrapper = styled.div`
 	grid-template-rows: auto 1fr auto;
 	overflow: hidden;
 	background: ${props => props.darkTheme ? "black" :"#f5f5f5"};
-	transition: background-color 1s;
+	transition: background-color 0.8s;
 `

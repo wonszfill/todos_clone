@@ -6,7 +6,6 @@ import { PALLETE } from "../../colors/PALLETE";
 
 import { mongoMultipleDelete, mongoPatchOne } from '../../helpers/contactMongo';
 
-
 export const TodoItem = ({note, setNotes, setLeftCounter}) => {
 
     const [isEdited, setIsEdited] = useState(false);
@@ -66,11 +65,14 @@ export const TodoItem = ({note, setNotes, setLeftCounter}) => {
                 checked={note.isDone}
                 onChange={onCheckHandle}
             />
+
             {!isEdited && <StyledTodoText 
                 isDone={note.isDone}
                 onDoubleClick={() => setIsEdited(true)} >
                 {note.text}
-            </StyledTodoText> }
+            </StyledTodoText>
+            }
+
             {isEdited && <StyledEditText 
                 autoFocus 
                 value={editedValue}
@@ -79,19 +81,19 @@ export const TodoItem = ({note, setNotes, setLeftCounter}) => {
                 }}
                 onBlur={passEditedValue}
                 onKeyPress={onEnterEditHandle}
-                 /> }
+            /> }
+
             <StyledRemoveButton
                 onClick={deleteCurrentNote}
                 src={XIcon}
-                alt="Delete" />
-    
+                alt="Delete" 
+            />
         </StyledTodoItem> 
     );
 }
 
 
 const StyledRemoveButton = styled.img`
-
     width:2rem;
     padding: 0.4rem;
     margin-right: 0.6rem;
@@ -109,7 +111,7 @@ const StyledTodoItem = styled.div`
     border: none;
     width: 100%;
     margin: 0;
-    padding: 0.5rem 0;
+    padding: 0;
     position: relative;
     box-sizing: border-box;
     border-top: 1px solid ${PALLETE.borderGray};

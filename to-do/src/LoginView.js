@@ -26,7 +26,6 @@ export const LoginView = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(login, password)
         mongoLogin({
             login: login, 
             password: password
@@ -52,20 +51,20 @@ export const LoginView = () => {
             <StyledFormTitle>LOGIN</StyledFormTitle>
                 <StyledFormRow>
                     <StyledLabel>
-                    Login: 
+                        Login: 
                     </StyledLabel>
                     <StyledTextInput type="text" value={login} required onChange={(e)=>setLogin(e.target.value)} />        
                    
                 </StyledFormRow>
                 <StyledFormRow>
                     <StyledLabel>
-                    Hasło:
+                        Password:
                     </StyledLabel>
                     <StyledTextInput type="password" value={password} required onChange={(e)=>setPassword(e.target.value)} />        
                    
                 </StyledFormRow>  
                 <StyledFormRow>
-                    <StyledButton type="submit" >Wyślij</StyledButton>
+                    <StyledButton type="submit" >Log in</StyledButton>
                 </StyledFormRow>
                 <FailedLoginAlert code={1} isOn={isAlertOn} message="Invalid login or password"/>                   
         </StyledForm>

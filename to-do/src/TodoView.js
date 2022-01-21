@@ -116,11 +116,11 @@ export function TodoView() {
 						</StyledTransitionGroup>
 
 						<CSSTransition
-										in={areAnyNotes}
-										key={"summary"}
-										timeout={300}
-										classNames="summary"
-										unmountOnExit
+							in={areAnyNotes}
+							key={"summary"}
+							timeout={300}
+							classNames="summary"
+							unmountOnExit
 						>
 							<StyledSummary theme={themeContext}>
 								<div>
@@ -148,14 +148,14 @@ export function TodoView() {
 						</CSSTransition>
 					</StyledTodosWrapper>
 					<StyledFooter>
-					<p>Double-click to edit a todo</p>
-					<p>
-					Created by Oscar Godson
-					</p><p>
-					Refactored by Christoph Burgmer
-					</p><p>
-					Recreated by Przemek Wojszwiłło
-					</p>
+						<p>Double-click to edit a todo</p>
+						<p>
+						Created by Oscar Godson
+						</p><p>
+						Refactored by Christoph Burgmer
+						</p><p>
+						Recreated by Przemek Wojszwiłło
+						</p>
 					</StyledFooter>
 				</StyledAppWraper>
 			</StyledApp>
@@ -207,6 +207,7 @@ const StyledTodosWrapper = styled.div`
 	background: ${props => props.theme.darkTheme ? DARK_PALLETE.lightBg : PALLETE.lightBg};
 	box-shadow: 0 0px 4px 1px ${PALLETE.shadowBlack}, 0 25px 50px 0 rgba(0, 0, 0, 0.1);
 	z-index: 5;
+	transition: background-color 0.5s;
 `
 
 const StyledSummary = styled.div`

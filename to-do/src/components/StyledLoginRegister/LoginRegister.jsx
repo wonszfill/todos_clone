@@ -69,6 +69,7 @@ export const StyledLabel = styled.div`
     display: flex;
     justify-content: flex-end;
     align-items: center;
+    text-align: right;
     letter-spacing: 1px;
 `
 

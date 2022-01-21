@@ -84,9 +84,7 @@ code {
     monospace;
 }
 
-
-
-
+/* CSS ANIMATION FOR REACT CLASSES */
 
 .item {
   width:100%;
@@ -99,18 +97,17 @@ code {
 }
 .item-enter-active {
   opacity: 1;
-  max-height: 6rem;
+  max-height: 15rem;
   transition: max-height 300ms, opacity 300ms;  
 }
 .item-exit {
   opacity: 1;
-  max-height: 6rem;
+  max-height: 15rem;
 }
 .item-exit-active {
   opacity: 0;
   max-height: 0;
   transition: max-height 300ms, opacity 200ms; 
-  
 }
 
 .summary {

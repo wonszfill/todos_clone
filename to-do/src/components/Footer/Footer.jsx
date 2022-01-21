@@ -3,7 +3,6 @@ import { PALLETE } from "../../colors/PALLETE";
 
 export const Footer = () => {
     
-    
     return ( 
         <StyledFooter>
             <StyledFooterLink href="https://www.linkedin.com/in/przemys%C5%82aw-wojszwi%C5%82%C5%82o/">

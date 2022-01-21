@@ -4,15 +4,11 @@ import { StyledLabel, StyledButton, StyledLoginWrapper, StyledForm, StyledFormRo
 import { Navigate } from "react-router";
 import { LoginContext, ThemeContext } from "./App";
 
-
-
-
-
 export const RegisterView = () => {
 
     const [login, setLogin] = useState("");
-    const [password, setPassword] = useState(false);
-    const [confPassword, setConfPassword] = useState(false);
+    const [password, setPassword] = useState("");
+    const [confPassword, setConfPassword] = useState("");
 
     const loginContext = useContext(LoginContext);
 
@@ -23,7 +19,6 @@ export const RegisterView = () => {
             login: login, 
             password: password
             });
-        
     }
 
     return ( 
@@ -41,20 +36,20 @@ export const RegisterView = () => {
                   </StyledFormRow>
                   <StyledFormRow>
                       <StyledLabel>
-                      Hasło:
+                      Password:
                       </StyledLabel>
                       <StyledTextInput name="password" type="password" value={password} required onChange={(e)=>setPassword(e.target.value)} />        
                       
                   </StyledFormRow>
                   <StyledFormRow>
                       <StyledLabel>
-                      Potwierdź hasło:
+                      Confirm password:
                       </StyledLabel>
                       <StyledTextInput name="confirmed password" type="password" value={confPassword} required onChange={(e)=>setConfPassword(e.target.value)} />        
                       
                   </StyledFormRow>    
                   <StyledFormRow>
-                      <StyledButton type="submit" >Wyślij</StyledButton>
+                      <StyledButton type="submit" >Register</StyledButton>
                   </StyledFormRow>                   
           </StyledForm>
       </StyledLoginWrapper> 
