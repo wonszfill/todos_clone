@@ -4,6 +4,7 @@ import {
 	Route
   } from "react-router-dom";
 import React from "react";
+import { Navigate } from "react-router";
 
 import { TodoView } from "./TodoView";
 import { LoginView } from "./LoginView";
@@ -72,6 +73,7 @@ const App = () => {
 				<BrowserRouter>
 					<Navbar />
 					<Routes>
+						<Route index path="/" element={<Navigate replace to="/notes/" />} />
 						<Route index path="/notes/" element={<TodoView/>} />
 						<Route path="/notes/:view" element={<TodoView/>} />
 						<Route path="/login" element={<LoginView/>} />

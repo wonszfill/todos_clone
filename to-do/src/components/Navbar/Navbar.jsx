@@ -164,7 +164,11 @@ const StyledThemeToggle = styled.div`
         border-radius: var(--radius);
         background: ${props => props.darkTheme ? "rgba(85,85,190,0.8)" : "rgba(108,108,210,0.8)"};
         transform: translate(${props => props.darkTheme ? "calc(var(--width) - var(--radius))" : "0px"});
-        transition: transform 0.5s;
+        transition: transform 0.5s, box-shadow 0.2s cubic-bezier(.39,.79,.49,1.18);  
+        
+    }
+    &:hover:after{
+        box-shadow: 0 0 2px 7px rgba(45,45,240,0.3);
     }
 `
 
